@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'accounts',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -83,6 +84,8 @@ DATABASES = {
         'HOST': config('DB_HOST'),
     }
 }
+
+AUTH_USER_MODEL = 'accounts.User'
 
 
 # Password validation
