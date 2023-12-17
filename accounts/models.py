@@ -1,11 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
+
 # Create your models here.
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, first_name, last_name, username, email, password=None):
+    def create_user(self, first_name, last_name, username, email, role, password=None):
         if not email:
             raise ValueError("User must have a valid Email Address")
 
@@ -16,19 +17,21 @@ class UserManager(BaseUserManager):
             email=self.normalize_email(email),
             username=username,
             first_name=first_name,
-            last_name=last_name
+            last_name=last_name,
+            role=role,
         )
         user.set_password(password)
-        user.save(self._db)
+        user.save(using=self._db)
         return user
 
-    def create_superuser(self, first_name, last_name, username, email, password=None):
+    def create_superuser(self, first_name, last_name, username, email, role, password=None):
         user = self.create_user(
             email=email,
             username=username,
             first_name=first_name,
             last_name=last_name,
-            password=password
+            password=password,
+            role=role,
         )
 
         user.is_admin = True
@@ -36,7 +39,7 @@ class UserManager(BaseUserManager):
         user.is_active = True
         user.is_superadmin = True
 
-        user.save(self._db)
+        user.save(using=self._db)
         return user
 
 
@@ -53,7 +56,8 @@ class User(AbstractBaseUser):
     username = models.CharField(max_length=128, unique=True)
     email = models.EmailField(max_length=128, unique=True)
     phone_number = models.CharField(max_length=12, blank=True)
-    role = models.PositiveSmallIntegerField(choices=RESTAURANT_CHOICES, blank=True)
+    role = models.PositiveSmallIntegerField(
+        choices=RESTAURANT_CHOICES)
 
     # required fields
     date_joined = models.DateTimeField(auto_now_add=True)
@@ -65,8 +69,8 @@ class User(AbstractBaseUser):
     is_superadmin = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
-    
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name', 'role']
+
     objects = UserManager()
 
     def __str__(self) -> str:
@@ -77,4 +81,25 @@ class User(AbstractBaseUser):
 
     def has_module_perms(self, app_label):
         return True
-    
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, blank=True, null=True)
+    profile_picture = models.ImageField(
+        upload_to='users/profile_pictures', blank=True, null=True)
+    cover_photo = models.ImageField(
+        upload_to='users/cover_pictures', blank=True, null=True)
+    address_line_1 = models.CharField(max_length=50, blank=True, null=True)
+    address_line_2 = models.CharField(max_length=50, blank=True, null=True)
+    country = models.CharField(max_length=15, blank=True, null=True)
+    state = models.CharField(max_length=15, blank=True, null=True)
+    city = models.CharField(max_length=15, blank=True, null=True)
+    pin_code = models.CharField(max_length=6, blank=True, null=True)
+    latitude = models.CharField(max_length=20, blank=True, null=True)
+    longitude = models.CharField(max_length=20, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return f'{self.user.first_name} {self.user.last_name}'
