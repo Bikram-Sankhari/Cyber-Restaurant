@@ -6,7 +6,7 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, first_name, last_name, username, email, role, password=None):
+    def create_user(self, first_name, last_name, username, email, password=None):
         if not email:
             raise ValueError("User must have a valid Email Address")
 
@@ -18,20 +18,18 @@ class UserManager(BaseUserManager):
             username=username,
             first_name=first_name,
             last_name=last_name,
-            role=role,
         )
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, first_name, last_name, username, email, role, password=None):
+    def create_superuser(self, first_name, last_name, username, email, password=None):
         user = self.create_user(
             email=email,
             username=username,
             first_name=first_name,
             last_name=last_name,
             password=password,
-            role=role,
         )
 
         user.is_admin = True
@@ -48,7 +46,7 @@ class User(AbstractBaseUser):
     CUSTOMER = 2
 
     RESTAURANT_CHOICES = (
-        (RESTAURANT, "Restaurant"),
+        (RESTAURANT, "Vendor"),
         (CUSTOMER, "Customer"),
     )
     first_name = models.CharField(max_length=56)
@@ -57,7 +55,7 @@ class User(AbstractBaseUser):
     email = models.EmailField(max_length=128, unique=True)
     phone_number = models.CharField(max_length=12, blank=True)
     role = models.PositiveSmallIntegerField(
-        choices=RESTAURANT_CHOICES)
+        choices=RESTAURANT_CHOICES, blank=True, null=True)
 
     # required fields
     date_joined = models.DateTimeField(auto_now_add=True)
@@ -69,7 +67,7 @@ class User(AbstractBaseUser):
     is_superadmin = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'first_name', 'last_name', 'role']
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
 
     objects = UserManager()
 
@@ -82,6 +80,16 @@ class User(AbstractBaseUser):
     def has_module_perms(self, app_label):
         return True
 
+    def get_role(self):
+        if self.role == 1:
+            return 'vendor'
+        elif self.role == 2:
+            return 'customer'
+        elif self.is_superadmin:
+            return 'super_admin'
+        else:
+            return 'admin'
+        
 
 class UserProfile(models.Model):
     user = models.OneToOneField(

@@ -15,9 +15,14 @@
     <div class="field-holder">
       {% for message in messages %}
         <div class="alert alert-{{message.tags}} d-flex alert-dismissible fade show show-notification" role="alert">
+
           {% if message.tags == 'success' %}
           <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:">
             <use xlink:href="#check-circle-fill" />
+
+          {% elif message.tags == 'primary' %}
+          <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Info:"><use xlink:href="#info-fill"/></svg>
+
           {% else %}
           <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
           {% endif %}
