@@ -144,3 +144,11 @@ MESSAGE_TAGS = {
     messages.ERROR: 'danger',
     messages.INFO: 'primary',
 }
+
+# Email Configuration
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = config('EMAIL_PORT', cast=int)
+EMAIL_HOST_USER = config('EMAIL')
+EMAIL_HOST_PASSWORD = config('EMAIL_PASSWORD')
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL= config('DEFAULT_FROM_EMAIL')

@@ -1,0 +1,11 @@
+<html>
+    <body>
+        {% autoescape  %}
+        <h1>Hi, {{user.first_name}} </h1>
+        <p style="color:red">
+        Please click on the below link to complete your registration
+        <a href='http://{{domain}}{% url 'activate' uidb64=uid token=token %}'> Click on this Link </a>
+        </p>
+        {% endautoescape %}
+    </body>
+</html>
