@@ -128,6 +128,7 @@ def login(request):
         user = auth.authenticate(email=email, password=password)
         if user:
             auth.login(request, user)
+            messages.success(request, 'You are now Logged In !!!')
             return redirect('my_account')
 
         else:

@@ -111,3 +111,6 @@ class UserProfile(models.Model):
 
     def __str__(self) -> str:
         return f'{self.user.first_name} {self.user.last_name}'
+    
+    def get_address(self):
+        return f'{self.address_line_1} | {self.address_line_2}'

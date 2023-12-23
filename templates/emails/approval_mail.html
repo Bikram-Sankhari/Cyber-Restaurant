@@ -1,0 +1,12 @@
+<html>
+    <body>
+        {% autoescape off %}
+        <h1>Hi, {{vendor.vendor_name}} </h1>
+        {% if vendor.is_approved %}
+        You are so sorry to say you are unapproved
+        {% else %}
+        Congratulations! Your restaurant is now approved and ready to post menu
+        {% endif %}
+        {% endautoescape %}
+    </body>
+</html>

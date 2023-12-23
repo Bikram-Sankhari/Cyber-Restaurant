@@ -1,5 +1,6 @@
 from django.db import models
 from accounts.models import User, UserProfile
+from accounts.utils import send_approval_mail
 
 
 class Vendor(models.Model):
@@ -10,6 +11,14 @@ class Vendor(models.Model):
     is_approved = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        if self.id:
+            previous_obj = Vendor.objects.get(id=self.id)
+            if self.is_approved != previous_obj.is_approved:
+                send_approval_mail(previous_obj)
+                
+        return super(Vendor, self).save(*args, **kwargs)
 
     def __str__(self) -> str:
         return self.vendor_name
