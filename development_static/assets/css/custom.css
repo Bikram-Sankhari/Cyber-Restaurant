@@ -14,3 +14,21 @@
     animation-duration: 5s;
     z-index: 2;
 }
+
+.text-holder .upload-gallery input{
+    font-size: 0.8rem;
+    margin-top: 1rem;
+}
+
+.text-holder .upload-gallery a{
+    white-space: normal;
+}
+
+.text-holder a{
+    color: #c33332;
+}
+
+.restaurant-info{
+    border: 0.1px solid rgba(0, 0, 0, 0.144);
+    padding: 1rem;
+}
