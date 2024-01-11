@@ -66,6 +66,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'Restaurant.context_processors.get_vendor',
+                'Restaurant.context_processors.get_google_api_key',
             ],
         },
     },
@@ -153,3 +154,4 @@ EMAIL_HOST_USER = config('EMAIL')
 EMAIL_HOST_PASSWORD = config('EMAIL_PASSWORD')
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL= config('DEFAULT_FROM_EMAIL')
+GOOGLE_API_KEY = config('GOOGLE_API_KEY')
