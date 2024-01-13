@@ -11,8 +11,8 @@
           <a href="{% url 'vendor_profile' %}"><i class="icon-building"></i>My Restaurant</a>
         </li>
 
-        <li "{% if request.path == '/accounts/vendorDashboard/' %}class=active"{% endif %}>
-          <a href="restaurant-menu-builder.html"><i class="icon-menu5"></i>Menu Builder</a>
+        <li {% if request.path == '/accounts/vendor/menu-builder/' %}class=active{% endif %}>
+          <a href="{% url 'menu_builder' %}"><i class="icon-menu5"></i>Menu Builder</a>
         </li>
 
         <li {% if request.path == '/accounts/vendorDashboard/' %}class="active"{% endif %}>

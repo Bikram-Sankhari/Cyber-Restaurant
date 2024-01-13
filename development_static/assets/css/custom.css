@@ -7,8 +7,9 @@
 }
 
 .show-notification{
-    position: fixed;
+    position: fixed!important;
     bottom: 100%;
+    opacity:100!important;
     right: 20px;
     animation-name: show-toast;
     animation-duration: 5s;
@@ -31,4 +32,22 @@
 .restaurant-info{
     border: 0.1px solid rgba(0, 0, 0, 0.144);
     padding: 1rem;
+}
+
+#category_name:hover{
+    text-decoration: underline;
+}
+
+form button{
+    background-color: #c33332!important;
+    color: white!important;
+    border-color: #c33332!important;
+}
+
+form button:hover{
+    background-color: #a02727!important;
+}
+
+#add_category_button:hover{
+    color:white;
 }

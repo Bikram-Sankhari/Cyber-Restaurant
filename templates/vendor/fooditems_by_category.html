@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+<div class="main-section">
+  {% include 'includes/cover.html' %}
+  <div class="page-section account-header buyer-logged-in">
+    <div class="container">
+        {% include 'includes/success_alert.html' %}
+        <div class="row">
+          <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+            {% include 'includes/vendor_sidebar.html' %}
+          </div>
+          <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+            <div class="user-dashboard loader-holder">
+              <div class="user-holder">
+                <h5 class="text-uppercase">Build Your Menu</h5>
+                <hr>
+                <a href="{% url 'menu_builder' %}" class="btn btn-light mb-3"  style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">
+                  <i class="bi bi-arrow-bar-left"></i>
+                  Back
+                </a>
+                <h6>Category: <span style="color:#c33332" class="fs-6">{{category | upper}}</span> </h6>
+                {% if fooditems %}
+                <table class="table table-hover table-borderless">
+                <tbody>
+                    {% for item in fooditems %}
+                  <tr>
+                    <td class="py-3 text-start">{{forloop.counter}}</td>
+                    <td class="py-3 text-start" style="width: 50vw;">
+                        <a href="#" class="text-decoration-none"><p class="mb-0 fw-bold" id="category_name">{{item}}</p></a>
+                        <small class="text-muted lh-1">{{item.description}}</small>
+                    </td>
+                    <td class="py-3" style="width: 20vw;"><i class="bi bi-pencil-square"></i> &nbsp; <i class="bi bi-trash" style="color:red"></i></td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+                </table>
+                {% else %}
+                <h6 class="text-center">No FoodItem in this Category</h6>
+                <div class="text-center">
+                <a href="#" class="btn btn-success btn-sm  m-1 px-4" style="--bs-btn-font-size: .8rem;--bs-btn-bg:#c33332;--bs-btn-border-color:#c33332;--bs-btn-color:white">
+                    <i class="bi bi-plus-lg"></i>
+                    How about adding one?
+                </a>
+                </div>
+                {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

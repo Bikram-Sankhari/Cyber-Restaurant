@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+<div class="main-section">
+  {% include 'includes/cover.html' %}
+  <div class="page-section account-header buyer-logged-in">
+    <div class="container">
+        {% include 'includes/success_alert.html' %}
+        <div class="row">
+          <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+            {% include 'includes/vendor_sidebar.html' %}
+          </div>
+          <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+            <div class="user-dashboard loader-holder">
+              <div class="user-holder">
+                <h5 class="text-uppercase">Build Your Menu</h5>
+                <hr>
+                <h6>Menu Categories </h6>
+                <a href="#" class="btn btn-success btn-sm float-end m-1 px-4" style="--bs-btn-font-size: .8rem;--bs-btn-bg:#c33332;--bs-btn-border-color:#c33332;--bs-btn-color:white">
+                    <i class="bi bi-plus-lg"></i>
+                    Add Food
+                </a>
+                <a href="{% url 'add_category' %}" id="add_category_button" class="btn btn-info btn-sm float-end m-1 px-3" style="--bs-btn-font-size: .8rem;--bs-btn-bg:;--bs-btn-border-color:#c33332;--bs-btn-color:#c33332;--bs-btn-active-bg:#157347;--bs-btn-active-border-color: #157347;--bs-btn-hover-bg: #157347;--bs-btn-hover-border-color: #146c43;">
+                    <i class="bi bi-plus-lg"></i>
+                    Add Category
+                </a>
+
+                <table class="table table-hover table-borderless">
+                <tbody>
+                    {% for category in categories %}
+                  <tr>
+                    <td class="py-3 text-start">{{forloop.counter}}</td>
+                    <td class="py-3 text-start" style="width: 50vw;">
+                        <a href="{% url 'fooditems_by_category' category.pk %}" class="text-decoration-none"><p class="mb-0 fw-bold" id="category_name">{{category.category_name}}</p></a>
+                        <small class="text-muted lh-1">{{category.description}}</small>
+                    </td>
+                    <td class="py-3" style="width: 20vw;"><a href="{% url 'edit_category' category.pk %}"><i class="bi bi-pencil-square" style="color:black"></i></a> &nbsp; 
+                      <a href="{% url 'delete_category' category.pk %}" onclick="return confirm('Confirm Delete {{category}} Category')"><i class="bi bi-trash" style="color:red"></i></a></td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              
+                </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

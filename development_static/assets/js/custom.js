@@ -21,7 +21,6 @@ function onPlaceChanged() {
         document.getElementById('id_address').placeholder = "Start typing...";
     }
     else {
-        console.log(place)
         var geocoder = new google.maps.Geocoder();
         var address = document.getElementById('id_address').value;
 

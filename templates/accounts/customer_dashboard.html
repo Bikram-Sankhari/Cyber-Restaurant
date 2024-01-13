@@ -20,11 +20,13 @@
                 </div>
 
                 <div class="text-holder">
-                  <span class="restaurant-title">Customer Name</span>
+                  <span class="restaurant-title">{{user.first_name}} {{user.last_name}}</span>
+                  {% if user.mobile_number %}
                   <div class="text">
                     <i class="icon-location"></i>
-                    <p>+91 32432893823</p>
+                    <p>{{user.mobile_number}}</p>
                   </div>
+                  {% endif %}
                 </div>
               </div>
             </div>

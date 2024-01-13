@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'menu',
     'vendor',
     'accounts',
     'django.contrib.admin',
@@ -145,6 +146,7 @@ from django.contrib.messages import constants as messages
 MESSAGE_TAGS = {
     messages.ERROR: 'danger',
     messages.INFO: 'primary',
+    messages.SUCCESS: 'success',
 }
 
 # Email Configuration
