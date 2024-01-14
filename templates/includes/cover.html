@@ -17,7 +17,13 @@
               <span class="restaurant-title">{{ vendor.vendor_name| title }}</span>
               <div class="text">
                 <i class="icon-location"></i>
-                <p>{{ vendor.user_profile.get_address }}</p>
+                <p>
+                  {% if vendor.user_profile.get_address != 'None' %}
+                  {{ vendor.user_profile.get_address }}
+                  {% else %}
+                  Set Your Address
+                  {% endif %}
+                </p>
               </div>
             </div>
           </div>
