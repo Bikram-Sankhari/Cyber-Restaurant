@@ -61,3 +61,120 @@ function onPlaceChanged() {
     }
     // get the address components and assign them to the fields
 }
+
+$(document).ready(function () {
+    $('.add-to-cart').on('click', function (e) {
+        e.preventDefault();
+        url = $(this).attr('href');
+        food_id = $(this).attr('data-id');
+
+        $.ajax({
+            type: 'GET',
+            url: url,
+            success: function (response) {
+                console.log(response)
+                if (response.status == 'Success') {
+                    document.getElementById('qty-' + food_id).innerHTML = response.quantity;
+                    document.getElementById('total-qty').innerHTML = response.total_quantity['food_count'];
+                }
+
+                else if (response.code == 400) {
+                    Swal.fire({
+                        title: "You are not Logged In",
+                        text: "Do You want to Login??",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#c33332",
+                        cancelButtonColor: "grey",
+                        confirmButtonText: "Yes, Login!"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            let timerInterval;
+                            Swal.fire({
+                                title: "Redirecting You to Login Page",
+                                html: "In <b></b> milliseconds.",
+                                timer: 2000,
+                                timerProgressBar: true,
+                                didOpen: () => {
+                                    Swal.showLoading();
+                                    const timer = Swal.getPopup().querySelector("b");
+                                    timerInterval = setInterval(() => {
+                                        timer.textContent = `${Swal.getTimerLeft()}`;
+                                    }, 100);
+                                },
+                                willClose: () => {
+                                    clearInterval(timerInterval);
+                                }
+                            }).then(function () {
+                                window.location = '/accounts/login';
+                            });
+                        }
+                    });
+
+                }
+
+                else {
+                    Swal.fire(response.message);
+                }
+            }
+        })
+    })
+
+    $('.decrease-cart').on('click', function (e) {
+        e.preventDefault();
+        url = $(this).attr('href');
+        food_id = $(this).attr('data-id');
+
+        $.ajax({
+            type: 'GET',
+            url: url,
+            success: function (response) {
+                console.log(response)
+                if (response.status == 'Success') {
+                    document.getElementById('qty-' + food_id).innerHTML = response.quantity;
+                    document.getElementById('total-qty').innerHTML = response.total_quantity['food_count'];
+                }
+
+                else if (response.code == 400) {
+                    Swal.fire({
+                        title: "You are not Logged In",
+                        text: "Do You want to Login??",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#c33332",
+                        cancelButtonColor: "grey",
+                        confirmButtonText: "Yes, Login!"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            let timerInterval;
+                            Swal.fire({
+                                title: "Redirecting You to Login Page",
+                                html: "In <b></b> milliseconds.",
+                                timer: 2000,
+                                timerProgressBar: true,
+                                didOpen: () => {
+                                    Swal.showLoading();
+                                    const timer = Swal.getPopup().querySelector("b");
+                                    timerInterval = setInterval(() => {
+                                        timer.textContent = `${Swal.getTimerLeft()}`;
+                                    }, 100);
+                                },
+                                willClose: () => {
+                                    clearInterval(timerInterval);
+                                }
+                            }).then(function () {
+                                window.location = '/accounts/login';
+                            });
+                        }
+                    });
+
+                }
+
+                else {
+                    Swal.fire(response.message);
+                }
+            }
+        })
+
+    })
+})

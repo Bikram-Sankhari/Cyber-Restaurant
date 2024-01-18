@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'marketplace',
     'menu',
     'vendor',
     'accounts',
@@ -68,6 +69,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'Restaurant.context_processors.get_vendor',
                 'Restaurant.context_processors.get_google_api_key',
+                'marketplace.context_processors.get_food_count',
             ],
         },
     },

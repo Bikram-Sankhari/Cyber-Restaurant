@@ -2453,7 +2453,6 @@ color:#cdcdcd !important;
 .wrapper-full_width .main-header .wide .col-lg-4 { width: 100%; }
 .main-location { display: block; z-index: 40; }
 .transparent-header .main-location > ul > li > a { color: #999; padding: 26px 10px 26px 0; }
-.main-header { padding: 15px 0; }
 #header.fancy .main-header {padding: 10px 0;}
 .main-header .col-lg-8 + div { position: absolute; bottom: 25px; right: 15px; width: 50%; }
 .logged-in .main-header .col-lg-8 + div { bottom: 10px; }

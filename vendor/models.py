@@ -1,13 +1,15 @@
 from django.db import models
 from accounts.models import User, UserProfile
 from accounts.utils import send_approval_mail
+from django.template.defaultfilters import slugify
 
 
 class Vendor(models.Model):
     user = models.OneToOneField(User, related_name='user', on_delete=models.CASCADE)
     user_profile = models.OneToOneField(UserProfile, related_name='user_profile', on_delete=models.CASCADE)
-    vendor_name = models.CharField(max_length=128)
+    vendor_name = models.CharField(max_length=128, unique=True)
     vendor_license = models.ImageField(upload_to='vendors/license')
+    vendor_slug = models.SlugField(max_length=128, unique=True)
     is_approved = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
@@ -17,7 +19,8 @@ class Vendor(models.Model):
             previous_obj = Vendor.objects.get(id=self.id)
             if self.is_approved != previous_obj.is_approved:
                 send_approval_mail(previous_obj)
-                
+            
+        self.vendor_slug = slugify(self.vendor_name)
         return super(Vendor, self).save(*args, **kwargs)
 
     def __str__(self) -> str:

@@ -1,3 +1,4 @@
+from django.db import IntegrityError
 from django.shortcuts import render, redirect
 from .forms import UserForm
 from django.http import HttpResponse
@@ -10,6 +11,8 @@ from .forms import UserForm
 from .utils import logged_in_redirect, send_verification_email, send_password_reset_email
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import PermissionDenied
+from django.template.defaultfilters import slugify
+
 # Create your views here.
 
 
@@ -87,15 +90,26 @@ def register_vendor(request):
             user = form.save(commit=False)
             user.role = User.RESTAURANT
             user.set_password(password)
-            user.save()
+            try:
+                user.save()
+            except IntegrityError:
+                messages.error(request, 'Vendor already registered')
+                return redirect('register_vendor')
 
             # Send Verification Email
             send_verification_email(request, user)
 
+            vendor_name = v_form.cleaned_data['vendor_name']
             vendor = v_form.save(commit=False)
             vendor.user = user
             vendor.user_profile = UserProfile.objects.get(user=user)
-            vendor.save()
+            vendor.vendor_slug = slugify(vendor_name)
+            try:
+                vendor.save()
+            except IntegrityError:
+                messages.error(request, 'Vendor already registered')
+                return redirect('register_vendor')
+            
             messages.success(
                 request, 'Your application is submitted successfully !!!')
             return redirect('register_vendor')

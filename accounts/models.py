@@ -95,10 +95,10 @@ class UserProfile(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, blank=True, null=True)
     profile_picture = models.ImageField(
-        upload_to='users/profile_pictures', blank=True, null=True)
+        upload_to='users/profile_pictures', blank=True, null=True, default='unknown.jpg')
     cover_photo = models.ImageField(
-        upload_to='users/cover_pictures', blank=True, null=True)
-    address = models.CharField(max_length=50, blank=True, null=True)
+        upload_to='users/cover_pictures', blank=True, null=True, default='unknown.jpg')
+    address = models.CharField(max_length=500, blank=True, null=True)
     country = models.CharField(max_length=15, blank=True, null=True)
     state = models.CharField(max_length=15, blank=True, null=True)
     city = models.CharField(max_length=15, blank=True, null=True)

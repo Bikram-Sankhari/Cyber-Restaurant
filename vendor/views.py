@@ -153,6 +153,8 @@ def edit_category(request, pk=None):
     return render(request, 'vendor/edit_category.html', context)
 
 
+@login_required(login_url='login')
+@user_passes_test(validate_vendor)
 def add_food(request):
     if request.method == 'POST':
         form = FoodItemForm(request.POST, request.FILES)
@@ -182,6 +184,9 @@ def add_food(request):
     }
     return render(request, 'vendor/add_food.html', context)
 
+
+@login_required(login_url='login')
+@user_passes_test(validate_vendor)
 def edit_food(request, pk=None):
     food = get_object_or_404(FoodItem, pk=pk)
     if food.vendor != get_vendor(request):
@@ -216,6 +221,9 @@ def edit_food(request, pk=None):
     }
     return render(request, 'vendor/edit_food.html', context)
 
+
+@login_required(login_url='login')
+@user_passes_test(validate_vendor)
 def delete_food(request, pk=None):
     food = get_object_or_404(FoodItem, pk=pk)
     if food.vendor != get_vendor(request):
