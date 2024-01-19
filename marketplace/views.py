@@ -10,6 +10,14 @@ from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
+def get_subtotal(request):
+    subtotal = 0
+    if request.user.is_authenticated:
+        cart_items = Cart.objects.filter(user=request.user)
+        for cart_item in cart_items:
+            subtotal += (cart_item.quantity * cart_item.food_item.price)
+    return format(subtotal, ".2f")
+
 
 def marketplace(request):
     vendors = Vendor.objects.filter(is_approved=True, user__is_active=True)
@@ -61,12 +69,20 @@ def add_to_cart(request, food_id=None):
                     new_cart_item = Cart.objects.create(
                         user=request.user, food_item=food_item, quantity=1)
                     new_cart_item.save()
-                    return JsonResponse({'status': 'Success', 'message': f'{food_item} Added to Cart', 'code': 200, 'quantity': 1, 'total_quantity': get_food_count(request)})
+                    return JsonResponse({'status': 'Success',
+                                         'message': f'{food_item} Added to Cart',
+                                         'code': 200, 'quantity': 1,
+                                         'total_quantity': get_food_count(request),
+                                         'subtotal': get_subtotal(request)})
 
                 else:
                     fooditem_from_cart.quantity += 1
                     fooditem_from_cart.save()
-                    return JsonResponse({'status': 'Success', 'message': f'Quantity Increased Successfully for {food_item}', 'code': 200, 'quantity': fooditem_from_cart.quantity, 'total_quantity': get_food_count(request)})
+                    return JsonResponse({'status': 'Success',
+                                         'message': f'Quantity Increased Successfully for {food_item}',
+                                         'code': 200, 'quantity': fooditem_from_cart.quantity,
+                                         'total_quantity': get_food_count(request),
+                                         'subtotal': get_subtotal(request)})
 
         else:
             return JsonResponse({'status': 'Failed', 'message': 'Invalid Request', 'code': 408})
@@ -84,7 +100,8 @@ def decrease_cart(request, food_id):
                 return JsonResponse({'status': 'Failed', 'message': 'No Food Item Found with this ID', 'code': 404})
             else:
                 try:
-                    fooditem_from_cart = Cart.objects.get(user=request.user, food_item=food_item)
+                    fooditem_from_cart = Cart.objects.get(
+                        user=request.user, food_item=food_item)
                 except:
                     return JsonResponse({'status': 'Failed', 'message': 'This Item is not in your Cart', 'code': 405})
 
@@ -92,14 +109,22 @@ def decrease_cart(request, food_id):
                     if fooditem_from_cart.quantity > 1:
                         fooditem_from_cart.quantity -= 1
                         fooditem_from_cart.save()
-                        return JsonResponse({'status': 'Success', 'message': f'Quantity Decreased Successfully for {food_item}', 'code': 200, 'quantity': fooditem_from_cart.quantity, 'total_quantity': get_food_count(request)})
+                        return JsonResponse({'status': 'Success',
+                                             'message': f'Quantity Decreased Successfully for {food_item}',
+                                             'code': 200,
+                                             'quantity': fooditem_from_cart.quantity,
+                                             'total_quantity': get_food_count(request),
+                                             'subtotal': get_subtotal(request)})
 
                     else:
-                        fooditem_from_cart.delete()
-                        return JsonResponse({'status': 'Success', 'message': f'{food_item} Removed from Cart', 'code': 201, 'quantity': 0, 'total_quantity': get_food_count(request)})
+                        return JsonResponse({'status': 'Success',
+                                             'message': f'{food_item} will be Removed from Cart',
+                                             'code': 201,
+                                             'quantity': 0,
+                                             'total_quantity': get_food_count(request)})
         else:
             return JsonResponse({'status': 'Failed', 'message': 'Invalid Request', 'code': 408})
-        
+
     else:
         return JsonResponse({'status': 'Failed', 'message': 'Please Login to Your Account', 'code': 400})
 
@@ -107,12 +132,18 @@ def decrease_cart(request, food_id):
 @login_required(login_url='login')
 def cart(request):
     cart_items = Cart.objects.filter(user=request.user)
+    subtotal = get_subtotal(request)
+    gst = format(float(subtotal) * 18 / 100, ".2f")
     context = {
         'cart_items': cart_items,
+        'subtotal': subtotal,
+        'gst': gst,
+        'total': format(float(subtotal) + (float(subtotal) * 18 / 100), ".2f"),
     }
     return render(request, 'marketplace/cart.html', context)
 
 
+@login_required(login_url='login')
 def delete_cart(request, food_id):
     if request.user.is_authenticated:
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
@@ -122,12 +153,17 @@ def delete_cart(request, food_id):
                 return JsonResponse({'status': 'Failed', 'message': 'No Food Item Found with this ID', 'code': 404})
             else:
                 try:
-                    fooditem_from_cart = Cart.objects.get(user=request.user, food_item=food_item)
+                    fooditem_from_cart = Cart.objects.get(
+                        user=request.user, food_item=food_item)
                 except:
                     return JsonResponse({'status': 'Failed', 'message': 'This Item is not in your Cart', 'code': 405})
 
                 else:
                     fooditem_from_cart.delete()
-                    return JsonResponse({'status': 'Success', 'message': f'{food_item} Removed from Cart', 'code': 201, 'total_quantity': get_food_count(request)})
+                    return JsonResponse({'status': 'Success',
+                                         'message': f'{food_item} Removed from Cart',
+                                         'code': 200,
+                                         'total_quantity': get_food_count(request),
+                                         'subtotal': get_subtotal(request)})
         else:
             return JsonResponse({'status': 'Failed', 'message': 'Invalid Request', 'code': 408})

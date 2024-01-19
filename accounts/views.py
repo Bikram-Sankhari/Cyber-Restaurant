@@ -12,6 +12,7 @@ from .utils import logged_in_redirect, send_verification_email, send_password_re
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.exceptions import PermissionDenied
 from django.template.defaultfilters import slugify
+from django.contrib.sessions.backends.base import SessionBase
 
 # Create your views here.
 
@@ -142,6 +143,7 @@ def login(request):
         user = auth.authenticate(email=email, password=password)
         if user:
             auth.login(request, user)
+            request.session.set_expiry(0)
             messages.success(request, 'You are now Logged In !!!')
             return redirect('my_account')
 

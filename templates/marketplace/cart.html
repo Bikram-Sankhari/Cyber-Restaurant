@@ -22,7 +22,7 @@
                   {% if cart_items %}
                     <div class="menu-itam-holder">
                       <div id="menu-item-list-6272" class="menu-itam-list">
-                        <ul>
+                        <ul id="cart-holder">
                           {% for item in cart_items %}
                             <li id="food-item-{{item.food_item.pk}}">
                               <div class="image-holder">
@@ -70,22 +70,23 @@
                       <li style="list-style-type: none;">
                         Subtotal
                         <span class="price float-end">
-                          <span class="currency">$</span>
-                          <span id="subtotal">0</span>
+                          <span class="currency">₹</span>
+                          <span id="subtotal">{{subtotal}}</span>
                         </span>
                       </li>
                       <li style="list-style-type: none;">
                         GST
                         <span class="price float-end">
-                          <span class="currency">$</span>
-                          <span id="gst">0</span>
+                          <span class="currency">₹</span>
+                          <span id="gst">{{gst}}</span>
                         </span>
                       </li>
-                      <li class="fw-bold" style="list-style-type: none;">
+                      <hr class="hr m-0" />
+                      <li class="fw-bold py-2" style="list-style-type: none;">
                         TOTAL
                         <span class="price float-end">
-                          <span class="currency">$</span>
-                          <span id="total">0</span>
+                          <span class="currency">₹</span>
+                          <span id="total">{{total}}</span>
                         </span>
                       </li>
                     </ul>
