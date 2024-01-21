@@ -17,8 +17,7 @@ def logged_in_redirect(request, message):
 def send_verification_email(request, user):
     from_email = settings.DEFAULT_FROM_EMAIL
     current_site = get_current_site(request)
-    mail_subject = f'Activation Link for Cyber Restaurant {
-        user.get_role()} Registration'
+    mail_subject = f'Activation Link for Cyber Restaurant {user.get_role()} Registration'
     context = {
         'user': user,
         'domain': current_site,

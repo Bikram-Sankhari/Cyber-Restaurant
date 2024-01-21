@@ -16,7 +16,7 @@
                             <div class="listing-sorting-holder">
                                 <div class="row">
                                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                        <h4>15 Restaurant's found</h4>
+                                        <h4>{{vendor_count}} Restaurant's found</h4>
                                     </div>
                                 </div>
                             </div>
@@ -36,8 +36,12 @@
                                                     <a href="{% url 'vendor_detail' vendor.vendor_slug %}">{{vendor.vendor_name}}</a>
                                                 </h5>
                                             </div>
+                                            {% if vendor.distance is not None %}
+                                            <span><small class="text-muted" style="line-height:2vh;display: block;"><b>{{ vendor.distance }}km</b> Away</small></span>
+                                            {% endif %}
+
                                             {% if vendor.user_profile.address %}
-                                            <span><small class="text-muted lh-1">{{ vendor.user_profile.address }}</small></span>
+                                            <span><small class="text-muted mt-1" style="line-height:2vh;display: block;">{{ vendor.user_profile.address }}</small></span>
                                             {% endif %}
                                         </div>
                                         <div class="list-option">

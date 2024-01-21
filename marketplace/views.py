@@ -1,11 +1,17 @@
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 from menu.models import Category, FoodItem
 from vendor.models import Vendor
 from django.db.models import Prefetch
 from .models import Cart
 from .context_processors import get_food_count
 from django.contrib.auth.decorators import login_required
+from django.utils.datastructures import MultiValueDictKeyError
+from django.contrib import messages
+from django.db.models import Q
+from django.contrib.gis.geos import GEOSGeometry
+from django.contrib.gis.measure import D
+from django.contrib.gis.db.models.functions import Distance
 
 
 # Create your views here.
@@ -20,10 +26,64 @@ def get_subtotal(request):
 
 
 def marketplace(request):
-    vendors = Vendor.objects.filter(is_approved=True, user__is_active=True)
+    try:
+        radius = int(request.GET['radius'])
+        latitude = float(request.GET['lat'])
+        longitude = float(request.GET['long'])
+    except MultiValueDictKeyError:
+        vendors = Vendor.objects.filter(is_approved=True, user__is_active=True)
+    except ValueError:
+        messages.error(request, 'Invalid Input')
+        return redirect('home')
+
+    # for searching the marketplace
+    else:
+        if radius < 5:
+            messages.error(request, 'Minimum Radius should be 5 KM')
+            return redirect('home')
+        elif radius > 50:
+            messages.error(request, 'Maximum Radius should be 50 KM')
+            return redirect('home')
+
+        current_point = GEOSGeometry(
+            f"POINT({longitude} {latitude})", srid=4326)
+        keywords = request.GET['keywords']
+        if keywords:
+            # Fetch the IDs of vendors by Searching FoodItems for the keywords
+            id_of_food_items = FoodItem.objects.filter(
+                food_title__icontains=keywords, is_available=True).values_list('vendor', flat=True)
+
+            # Fetch IDs of vendors by searching Categories for the keywords
+            id_of_food_categories = Category.objects.filter(
+                category_name__icontains=keywords).values_list('vendor', flat=True)
+
+            vendors = Vendor.objects.filter(Q(id__in=id_of_food_categories) |
+                                            Q(id__in=id_of_food_items) |
+                                            Q(vendor_name__icontains=keywords),
+                                            Q(is_approved=True,
+                                              user__is_active=True),
+                                            user_profile__location__distance_lte=(
+                                                current_point, D(km=radius))
+                                            ).annotate(distance=Distance("user_profile__location", current_point)
+                                                       ).order_by("distance")
+
+        else:
+            vendors = Vendor.objects.filter(
+                is_approved=True,
+                user__is_active=True,
+                user_profile__location__distance_lte=(
+                    current_point, D(km=radius))
+            ).annotate(distance=Distance("user_profile__location", current_point)
+                       ).order_by("distance")
+            
+        for vendor in vendors:
+            vendor.distance = round(vendor.distance.km, 2)
+
     context = {
-        'vendors': vendors
+        'vendors': vendors,
+        'vendor_count': vendors.count(),
     }
+
     return render(request, 'marketplace/listing.html', context)
 
 

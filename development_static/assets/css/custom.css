@@ -1,19 +1,43 @@
-@keyframes show-toast {
-    0% {bottom: -100%;}
-    20% {bottom: 1%;}
-    80% {bottom: 1%;}
-    100% {bottom: -100%}
-    
-}
-
 .show-notification{
     position: fixed!important;
     bottom: 100%;
     opacity:100!important;
     right: 20px;
-    animation-name: show-toast;
     animation-duration: 5s;
     z-index: 2;
+}
+
+@keyframes show-toast-1 {
+    0% {bottom: -100%;}
+    20% {bottom: 1vh;}
+    80% {bottom: 1vh;}
+    100% {bottom: -100%}
+    
+}
+.notification-1{
+    animation-name: show-toast-1;
+}
+
+@keyframes show-toast-2 {
+    0% {bottom: -100%;}
+    20% {bottom: 16vh;}
+    80% {bottom: 16vh;}
+    100% {bottom: -100%}
+    
+}
+.notification-2{
+    animation-name: show-toast-2;
+}
+
+@keyframes show-toast-3 {
+    0% {bottom: -100%;}
+    20% {bottom: 32vh;}
+    80% {bottom: 32vh;}
+    100% {bottom: -100%}
+    
+}
+.notification-3{
+    animation-name: show-toast-3;
 }
 
 .text-holder .upload-gallery input{
@@ -50,4 +74,14 @@ form button:hover{
 
 #add_category_button:hover{
     color:white;
+}
+
+.home-input::placeholder{
+    color: #9097a1!important;
+    text-transform: none!important;
+    font-size: small;
+}
+
+.home-error{
+    color: #f3f0f0;
 }

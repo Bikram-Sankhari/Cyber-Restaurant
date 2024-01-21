@@ -38,6 +38,7 @@ function onPlaceChanged() {
         for (var i = 0; i < place.address_components.length; i++) {
             for (var j = 0; j < place.address_components[i].types.length; j++) {
                 var addressType = place.address_components[i].types[j];
+                try{
                 if (addressType == 'locality') {
                     document.getElementById('id_city').value = place.address_components[i].long_name;
                 }
@@ -55,6 +56,8 @@ function onPlaceChanged() {
                 else {
                     document.getElementById('id_pin_code').value = "";
                 }
+            }
+            catch(err){}
             }
         }
 

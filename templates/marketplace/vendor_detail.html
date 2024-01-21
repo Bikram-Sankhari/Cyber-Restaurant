@@ -81,7 +81,7 @@
                 <ul class="menu-list">
                   {% for category in categories %}
                     <li class="active">
-                      <a href="#" class="menu-category-link">{{ category }}</a>
+                      <a href="#{{category}}" class="menu-category-link">{{ category }}</a>
                     </li>
                   {% endfor %}
                 </ul>
@@ -102,7 +102,7 @@
                       <div class="menu-itam-holder">
                         <div id="menu-item-list-6272" class="menu-itam-list">
                           <div class="element-title" id="menu-category-2">
-                            <h5 class="text-color">{{ category }}</h5>
+                            <h5 id="{{category}}" class="text-color">{{ category }}</h5>
                             <span>{{ category.description }}</span>
                           </div>
                           {% if category.food_items.all %}
@@ -147,7 +147,7 @@
                       <div class="menu-itam-holder">
                         <div id="menu-item-list-6272" class="menu-itam-list">
                           <div class="element-title" id="menu-category-2">
-                            <h5 class="text-color">{{ category }}</h5>
+                            <h5 id="{{category}}" class="text-color">{{ category }}</h5>
                             <span>{{ category.description }}</span>
                           </div>
                           {% if category.food_items.all %}
