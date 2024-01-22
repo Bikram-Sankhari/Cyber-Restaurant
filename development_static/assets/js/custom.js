@@ -273,3 +273,49 @@ $(document).ready(function () {
 
     })
 })
+
+
+// Function for Fetching current location coords
+function getLocation(){
+    navigator.geolocation.getCurrentPosition(success, error);
+}
+
+function success(position) {
+    var latitude = position.coords.latitude;
+    var longitude = position.coords.longitude;
+    try{
+    $('#id_latitude').val(latitude);
+    $('#id_longitude').val(longitude)
+    }
+    catch(err){}
+    var url = "https://maps.google.com/maps/api/geocode/json?latlng="+latitude+","+longitude+"&key="+google_api_key;
+    var home_url = $("#home").attr('href') + "location_accessed";
+
+    $.ajax({
+        type: 'GET',
+        url: url,
+        success: function (response) {
+            if (response.status == "OK") {
+                var address = response.results[0].formatted_address;
+                try{
+                document.getElementById('id_address').value = address;
+                }
+                catch(err){}
+                document.getElementById('current-location').value = address;
+                sessionStorage.setItem('current_location', address);
+                window.location = home_url + "?longitude=" + longitude + "&latitude=" + latitude;
+            }
+            else {
+                error(response);
+            }
+        }
+    })
+}
+
+function error(err){
+    Swal.fire({
+        title: "The Internet?",
+        text: err.message,
+        icon: "error"
+      });
+}

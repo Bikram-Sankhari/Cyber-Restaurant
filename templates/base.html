@@ -19,7 +19,7 @@
     <link href="{% static 'assets/css/bootstrap-slider.css' %}" rel="stylesheet" />
     <link rel="stylesheet" href="{% static 'assets/css/custom.css' %}" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
 
     {% block extracss %}
 
@@ -48,10 +48,17 @@
     {% endblock %}
     {% include 'includes/footer.html' %}
   </body>
-  {% if 'profile' in request.path or request.path == "/" %}
-  <script src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_API_KEY }}&libraries=places&callback=initAutoComplete" async defer></script>
+  {% if 'profile' in request.path or request.path == '/' %}
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_API_KEY }}&libraries=places&callback=initAutoComplete" async defer></script>
   {% endif %}
-  <script src="{% static 'assets/js/custom.js' %}"></script>
+  <script type="text/javascript" src="{% static 'assets/js/custom.js' %}"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    var google_api_key = '{{GOOGLE_API_KEY}}'
+    var current_location = sessionStorage.getItem('current_location')
+    if (current_location != '') {
+      document.getElementById('current-location').value = current_location
+    }
+  </script>
 </html>
