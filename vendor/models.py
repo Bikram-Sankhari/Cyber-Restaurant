@@ -63,32 +63,21 @@ def get_time_choices():
 
 TIME_CHOICES = get_time_choices()
 
-
-# @deconstructible
-# class OpeningOverlapValidator(object):
-#     day = -1
-#     vendor = None
-
-#     def __init__(self, day, vendor):
-#         self.day = day
-#         self.vendor = vendor
-
-#     def __call__(self, value):
-#         print(self.day)
-#         open_slabs = OpeningHours.objects.filter(vendor=self.vendor, day=self.day)
-#         for slab in open_slabs:
-#             if value >= slab.open and value < slab.close:
-#                 raise ValidationError(_('There is an overlap in the opening hour for this day'), code=500)
-    
-#     def __eq__(self, other):
-#         return isinstance(other, self.__class__) and self.day == other.day and self.vendor == other.vendor
-
 class OpeningHours(models.Model):
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
     day = models.CharField(choices=DAY_CHOICES)
     open = models.FloatField(choices=TIME_CHOICES)
     close = models.FloatField(choices=TIME_CHOICES)
     is_closed = models.BooleanField(default=False)
+
+    def get_day(self):
+        return self.get_day_display()
+    
+    def get_open(self):
+        return self.get_open_display()
+    
+    def get_close(self):
+        return self.get_close_display()
 
     def __str__(self) -> str:
         return self.vendor.vendor_name
@@ -98,17 +87,21 @@ class OpeningHours(models.Model):
         return super(OpeningHours, self).save(*args, **kwargs)
 
     def clean(self):
-        open_slabs = OpeningHours.objects.filter(vendor=self.vendor, day=self.day)
-       
+        opening_overlap_entry = OpeningHours.objects.filter(vendor=self.vendor, day=self.day, open__lte = self.open, close__gte=self.open)
+        closing_overlap_entry = OpeningHours.objects.filter(vendor=self.vendor, day=self.day, open__lte = self.close, close__gte=self.close)
+        subset_entry = OpeningHours.objects.filter(vendor=self.vendor, day=self.day, open__gte = self.open, close__lte=self.close)
+
         if self.open >= self.close:
             raise ValidationError(_('Restaurant must Open before Closing'), code=500)
 
-        for slab in open_slabs:
-            if self.open >= slab.open and self.open < slab.close:
-                raise ValidationError(_('There is an overlap in the Opening hour for this day'), code=501)
-    
-            if self.close > slab.open and self.close <= slab.close:
-                raise ValidationError(_('There is an overlap in the Closing hour for this day'), code=502)
+        if opening_overlap_entry and opening_overlap_entry[0] != self:
+            raise ValidationError(_('There is an overlap in the Opening hour for this day'), code=501)
+
+        if closing_overlap_entry and closing_overlap_entry[0] != self:
+            raise ValidationError(_('There is an overlap in the Closing hour for this day'), code=502)
+        
+        if subset_entry and subset_entry[0] != self:
+            raise ValidationError(_('There is a subset of the Open Period for this day'), code=503)
 
         super(OpeningHours, self).clean()
 

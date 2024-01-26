@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+<div class="main-section">
+  {% include 'includes/cover.html' %}
+  <div class="page-section account-header buyer-logged-in">
+    <div class="container">
+        {% include 'includes/success_alert.html' %}
+        <div class="row">
+          <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+            {% include 'includes/vendor_sidebar.html' %}
+          </div>
+          <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+            <div class="user-dashboard loader-holder">
+              <div class="user-holder">
+                <h5 class="text-uppercase">Your Opening Hours</h5>
+                <hr>
+                {% if opening_hours %}
+                <table class="table table-hover table-borderless">
+                <tbody class="container">
+                    {% for hour in opening_hours %}
+                  <tr class="row px-3 mb-2" style="border: 1px solid #d6d6d4;">
+                    <td class="py-3 text-start col-12 col-sm-3 col-lg-2"><b>{{hour.get_day}}</b></td>
+                    <td class="py-3 col-5 col-sm-3 col-lg-2">{{hour.get_open}}</td>
+                    <td class="py-3 px-0 col-1">-</td>
+                    <td class="py-3 col-5 col-sm-3 col-lg-2">{{hour.get_close}}</td>
+                    <td class="py-3 px-0 col-12 col-sm-2 col-lg-2">
+                        <div class="float-end">
+                            <a href="#"><i class="bi bi-pencil-square mx-2" style="color:black"></i></a>
+                            <a href="#" onclick="return confirm('Confirm Delete \'{{category | upper}}\' Category')"><i class="bi bi-trash mx-2" style="color:red"></i></a>
+                        </div>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+                </table>
+                {% else %}
+                <h6 class="text-center">Set your Opening Hours and start receiving Orders</h6>
+                <div class="text-center">
+                {% endif %}
+                <div class="container">
+                    {% for field in form %}
+                    <div class="row mb-2">
+                        <label class="col-4 col-sm-3" style="font-size: small;" for="{{field.name}}">{{field.label}}</label>
+                        {{field}}
+                    </div>
+                    {% endfor %}
+                    <div class="row">
+                        <div class="col-10 col-sm-6 px-0">
+                        <a href="#" class="btn btn-success btn-sm  m-1 px-4 float-end" style="--bs-btn-font-size: .8rem;--bs-btn-bg:#c33332;--bs-btn-border-color:#c33332;--bs-btn-color:white">
+                            <i class="bi bi-plus-lg"></i>
+                            Add
+                        </a>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+{% endblock %}

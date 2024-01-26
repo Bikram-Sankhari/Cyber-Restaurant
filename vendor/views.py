@@ -5,8 +5,8 @@ from accounts.forms import UserProfileForm
 from accounts.models import UserProfile
 from accounts.views import validate_vendor
 from menu.models import Category, FoodItem
-from .models import Vendor
-from .forms import VendorForm
+from .models import OpeningHours, Vendor
+from .forms import VendorForm, OpeningHoursForm
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
 from menu.forms import CategoryForm, FoodItemForm
@@ -234,3 +234,42 @@ def delete_food(request, pk=None):
     food.delete()
     messages.success(request, 'Food Item deleted successfully')
     return redirect('fooditems_by_category', pk)
+
+@login_required(login_url='login')
+@user_passes_test(validate_vendor)
+def opening_hours(request):
+    vendor = get_vendor(request)
+    form = OpeningHoursForm()
+    opening_hours = OpeningHours.objects.filter(vendor=vendor).order_by('day', 'open')
+    context = {
+        'opening_hours': opening_hours,
+        'form': form,
+    }
+    return render(request, 'vendor/opening_hours.html', context)
+
+
+@login_required(login_url='login')
+@user_passes_test(validate_vendor)
+def add_opening_hours(request):
+    if request.method == 'POST':
+        form = OpeningHoursForm(request.POST)
+        if form.is_valid():
+            opening_hours = form.save(commit=False)
+            opening_hours.vendor = get_vendor(request)
+            opening_hours.save()
+            messages.success(request, 'Opening Hours added successfully')
+            return redirect('opening_hours')
+        else:
+            for field in form:
+                for error in field.errors:
+                    print(error)
+                    messages.error(request, error)
+    else:
+        form = OpeningHoursForm()
+
+    context = {
+        'form': form,
+    }
+
+
+    return render(request, 'vendor/add_opening_hours.html', context)
