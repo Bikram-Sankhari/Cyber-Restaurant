@@ -17,6 +17,20 @@ class Vendor(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
 
+    def open_now(self):
+        now = dt.datetime.now()
+        today = ((int(now.strftime('%w')) - 1) % 7) + 1
+        time_difference = now - dt.datetime.strptime(f'{now.date()} 00:00', '%Y-%m-%d %H:%M')
+        time_difference_hour = round(time_difference.total_seconds() / 3600, 1)
+
+        current_time_slab = OpeningHours.objects.filter(vendor=self, day=today, open__lte=time_difference_hour, close__gte=time_difference_hour)
+
+        if current_time_slab:
+            return current_time_slab[0]
+
+        return False
+
+
     def save(self, *args, **kwargs):
         if self.id:
             previous_obj = Vendor.objects.get(id=self.id)

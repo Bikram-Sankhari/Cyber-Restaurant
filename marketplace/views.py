@@ -1,7 +1,8 @@
+import datetime
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from menu.models import Category, FoodItem
-from vendor.models import Vendor
+from vendor.models import Vendor, OpeningHours
 from django.db.models import Prefetch
 from .models import Cart
 from .context_processors import get_food_count
@@ -94,6 +95,7 @@ def marketplace(request):
             messages.error(request, 'Please enable Location Services')
             return redirect('home')
 
+
     context = {
         'vendors': vendors,
         'vendor_count': vendors.count(),
@@ -108,6 +110,7 @@ def vendor_detail(request, vendor_slug):
         food_items_in_cart = Cart.objects.filter(user=request.user)
 
     vendor = get_object_or_404(Vendor, vendor_slug=vendor_slug)
+    vendor_open = OpeningHours.objects.filter(vendor=vendor).order_by('day', 'open')
     categories = Category.objects.filter(vendor=vendor).prefetch_related(
         Prefetch(
             'food_items',
@@ -119,6 +122,7 @@ def vendor_detail(request, vendor_slug):
         'vendor': vendor,
         'categories': categories,
         'food_items_in_cart': food_items_in_cart,
+        'open_hours': vendor_open,
     }
 
     if food_items_in_cart:
