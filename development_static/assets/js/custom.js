@@ -365,13 +365,11 @@ $(document).ready(function () {
         csrf_token = $('input[name="csrfmiddlewaretoken"]').val();
 
         days_map = get_days_map();
-        day_str = days_map.get('1');
+        day_str = days_map.get(String(day));
 
         times_map = get_times_map();
         open_str = times_map.get(String(open));
         close_str = times_map.get(String(close));
-
-        console.log(close_str, times_map);
 
         data = {
             'day': day,
@@ -380,78 +378,194 @@ $(document).ready(function () {
             'is_closed': is_closed,
             'csrfmiddlewaretoken': csrf_token
         }
+        headers = {
+            'X-CSRFToken': csrf_token,
+        }
 
         $.ajax({
             type: 'POST',
             url: url,
             data: data,
+            headers: headers,
             success: function (response) {
                 if (response.status == 'Success') {
-                    Swal.fire({
-                        title: "WooHooo!!!",
-                        text: "Opening Hour added Successfully",
-                        icon: "success"
-                    }).then((result) => {
-                        // New Row
-                        new_row = document.createElement('tr')
-                        new_row.setAttribute('class', 'row px-3 mb-2-');
-                        new_row.setAttribute('style', 'border: 1px solid #d6d6d4;');
 
-                        // Day Column
-                        day_column = document.createElement('td')
-                        bold = document.createElement('b');
-                        day_column_string = document.createTextNode(day_str);
-                        bold.appendChild(day_column_string)
-                        day_column.appendChild(bold);
-                        day_column.setAttribute('class', 'py-3 text-start col-12 col-sm-3 col-lg-2');
+                    // New Row
+                    new_row = document.createElement('tr');
+                    new_row.setAttribute('class', 'row px-3 mb-2');
+                    new_row.setAttribute('style', 'border: 1px solid #d6d6d4;');
+                    new_row.setAttribute('id', response.new_id);
+                    new_row.setAttribute('data-day', String(day));
+                    new_row.setAttribute('data-open', String(open));
 
-                        new_row.appendChild(day_column)
+                    // Day Column
+                    day_column = document.createElement('td');
+                    bold = document.createElement('b');
+                    day_column_string = document.createTextNode(day_str);
+                    bold.appendChild(day_column_string);
+                    day_column.appendChild(bold);
+                    day_column.setAttribute('class', 'py-3 text-start col-12 col-sm-3 col-lg-2');
 
-                        if (is_closed) {
-                            // Holiday Column
-                            holiday_column = document.createElement('td')
-                            holiday_span = document.createElement('span')
-                            holiday_column_string = document.createTextNode('Holiday');
+                    new_row.appendChild(day_column);
 
-                            holiday_span.appendChild(holiday_column_string)
-                            holiday_column.appendChild(holiday_span);
+                    if (is_closed) {
+                        // Holiday Column
+                        holiday_column = document.createElement('td');
+                        holiday_span = document.createElement('span');
+                        holiday_column_string = document.createTextNode('Holiday');
 
-                            holiday_span.setAttribute('class', 'text-muted');
-                            holiday_column.setAttribute('class', 'py-3 col-11 col-sm-7 col-lg-5');
+                        holiday_span.appendChild(holiday_column_string)
+                        holiday_column.appendChild(holiday_span);
 
-                            new_row.appendChild(holiday_column)
+                        holiday_span.setAttribute('class', 'text-muted');
+                        holiday_column.setAttribute('class', 'py-3 col-11 col-sm-7 col-lg-5');
+
+                        new_row.appendChild(holiday_column);
+                    }
+
+                    else {
+                        // Opening time column
+                        open_column = document.createElement('td');
+                        open_text = document.createTextNode(open_str);
+
+                        open_column.appendChild(open_text);
+                        open_column.setAttribute('class', 'py-3 col-5 col-sm-3 col-lg-2');
+
+                        new_row.appendChild(open_column);
+                        // Hyphen
+                        hyphen_column = document.createElement('td');
+                        hyphen_text = document.createTextNode('-');
+
+                        hyphen_column.appendChild(hyphen_text);
+                        hyphen_column.setAttribute('class', 'py-3 px-0 col-1');
+
+                        new_row.appendChild(hyphen_column);
+                        // Closing time column
+                        close_column = document.createElement('td');
+                        close_text = document.createTextNode(close_str);
+
+                        close_column.appendChild(close_text);
+                        close_column.setAttribute('class', 'py-3 col-5 col-sm-3 col-lg-2');
+
+                        new_row.appendChild(close_column);
+                    }
+
+                    items_div = document.createElement('div');
+
+                    // CSRF tag
+                    csrf_input = document.createElement('input');
+                    csrf_input.setAttribute('type', 'hidden');
+                    csrf_input.setAttribute('name', 'csrfmiddlewaretoken');
+                    csrf_input.setAttribute('value', response.csrf);
+
+                    items_div.appendChild(csrf_input);
+
+                    // Delete Icon
+                    items_column = document.createElement('td');
+                    delete_a = document.createElement('a');
+                    delete_i = document.createElement('i');
+
+
+
+                    delete_i.setAttribute('class', 'bi bi-trash mx-2');
+                    delete_i.setAttribute('style', 'color:grey;');
+                    delete_a.appendChild(delete_i);
+
+                    delete_a.setAttribute('href', '/accounts/vendor/opening-hours/remove/' + response.new_id + '/');
+                    delete_a.setAttribute('class', 'remove_opening_hour');
+                    delete_a.setAttribute('style',  'pointer-events: none;');
+                    delete_a.setAttribute('data-day', day_str);
+
+                    if (is_closed) {
+                        delete_a.setAttribute('data-is-holiday', '');
+                    }
+
+                    else {
+                        delete_a.setAttribute('data-open', open_str);
+                        delete_a.setAttribute('data-close', close_str);
+                    }
+
+
+                    items_div.appendChild(delete_a);
+
+                    items_div.setAttribute('class', 'float-end');
+                    items_div.setAttribute('title', 'Refresh First');
+
+                    items_column.appendChild(items_div);
+                    items_column.setAttribute('class', 'py-3 px-0 col-12 col-sm-2 col-lg-2');
+
+                    new_row.appendChild(items_column);
+
+
+                    no_opening_hour = document.getElementById('no_opening_hours');
+
+                    if (no_opening_hour) {
+                        // Append first row
+                        top_hr = document.getElementById('top-hr');
+
+                        table = document.createElement('table');
+                        tbody = document.createElement('tbody');
+
+                        tbody.appendChild(new_row);
+                        table.appendChild(tbody);
+
+                        tbody.setAttribute('class', 'container');
+                        tbody.setAttribute('id', 'table-body');
+                        table.setAttribute('class', 'table table-hover table-borderless');
+
+                        top_hr.insertAdjacentElement('afterend', table);
+                        no_opening_hour.remove();
+                    }
+
+                    else {
+                        // Determine the position
+                        adjacent_day_rows = null;
+                        for (let i = day; i > 0; i--) {
+                            adjacent_day_rows = document.querySelectorAll('[data-day="' + i + '"]');
+                            if (adjacent_day_rows.length > 0) {
+                                break;
+                            }
                         }
 
-                        else{
-                            // Opening time column
-                            open_column = document.createElement('td')
-                            open_text = document.createTextNode(open_str);
+                        if (adjacent_day_rows.length > 0) {
+                            if (adjacent_day_rows[0].getAttribute('data-day') != day) {
+                                // If the new entry is First Entry for that Day
+                                adjacent_day_rows[adjacent_day_rows.length - 1].insertAdjacentElement('afterend', new_row);
+                            }
 
-                            open_column.appendChild(open_text);
-                            open_column.setAttribute('class', 'py-3 col-5 col-sm-3 col-lg-2');
+                            else {
+                                // If there are previous entries for that day
+                                just_below_element = null;
+                                for (let i = open - 0.5; i >= 0; i -= 0.5) {
+                                    for (let j = 0; j < adjacent_day_rows.length; j++) {
+                                        current_element = adjacent_day_rows[j]
+                                        if (current_element.getAttribute('data-open') == i) {
+                                            just_below_element = current_element;
+                                            break;
+                                        }
+                                    }
 
-                            new_row.appendChild(open_column)
-                            // Hyphen
-                            hyphen_column = document.createElement('td')
-                            hyphen_text = document.createTextNode('-');
+                                    if (just_below_element) {
+                                        break;
+                                    }
+                                }
 
-                            hyphen_column.appendChild(hyphen_text)
-                            hyphen_column.setAttribute('class', 'py-3 px-0 col-1');
+                                if (just_below_element) {
+                                    just_below_element.insertAdjacentElement('afterend', new_row);
+                                }
 
-                            new_row.appendChild(hyphen_column)
-                            // Closing time column
-                            close_column = document.createElement('td')
-                            close_text = document.createTextNode(close_str);
-
-                            close_column.appendChild(close_text)
-                            close_column.setAttribute('class', 'py-3 col-5 col-sm-3 col-lg-2');
-
-                            new_row.appendChild(close_column)
-
-                            // Delete and Edit icons
-                            
+                                else {
+                                    adjacent_day_rows[0].insertAdjacentElement('beforebegin', new_row);
+                                }
+                            }
                         }
-                    });;
+                        else {
+                            // If the new entry is First Day
+                            tbody = document.getElementById('table-body');
+                            tbody.prepend(new_row);
+                        }
+                    }
+
                 }
 
                 else {
@@ -463,6 +577,76 @@ $(document).ready(function () {
                 }
             }
         })
+    })
+
+    $('.remove_opening_hour').on('click', function (e) {
+        e.preventDefault();
+        url = $(this).attr('href');
+        csrf_token = $(this).parent("div").find('input[name="csrfmiddlewaretoken"]').val();
+
+        headers = {
+            'X-CSRFToken': csrf_token,
+        }
+
+        if ($(this).attr('data-is-holiday') == undefined) {
+            message = "Remove " + $(this).attr('data-open') + " to " + $(this).attr('data-close') + " Open hours for " + $(this).attr('data-day') + "??"
+        }
+        
+        else {
+            message = "Remove Holiday for " + $(this).attr('data-day') + "??"
+        }
+
+        Swal.fire({
+            title: "Are you sure?",
+            text: message,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#c33332",
+            cancelButtonColor: "grey",
+            confirmButtonText: "Yes, Remove"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: 'DELETE',
+                    url: url,
+                    headers: headers,
+                    success: function (response) {
+                        if (response.status == 'Success') {
+                            document.getElementById(response.new_id).remove();
+
+                            tbody = document.getElementById('table-body');
+                            rows = tbody.querySelectorAll('tr');
+
+                            if(rows.length == 0){
+                                $('table').remove();
+                                no_opening_hour = document.createElement('h6');
+                                no_opening_hour_text = document.createTextNode('Set your Opening Hours and start receiving Orders');
+                                no_opening_hour_hr = document.createElement('hr');
+
+                                no_opening_hour.appendChild(no_opening_hour_text);
+                                no_opening_hour.setAttribute('id', 'no_opening_hours');
+                                no_opening_hour.setAttribute('class', 'text-center my-4');
+
+                                top_hr = document.getElementById('top-hr');
+
+                                top_hr.insertAdjacentElement('afterend', no_opening_hour);
+                                no_opening_hour.insertAdjacentElement('afterend', no_opening_hour_hr);
+
+                            }
+                        }
+
+                        else {
+                            Swal.fire({
+                                title: "Oops!",
+                                text: response.message,
+                                icon: "info"
+                            });
+                        }
+                    }
+                })
+            }
+        })
+
     })
 })
 

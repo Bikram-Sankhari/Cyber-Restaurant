@@ -103,15 +103,15 @@ class OpeningHours(models.Model):
             holiday = OpeningHours.objects.filter(vendor=self.vendor, day=self.day, is_closed=True)
             if holiday:
                 raise ValidationError([_('The Restaurant is closed on this day'), _('504')])
-                
+
             if self.open >= self.close:
                 raise ValidationError([_('Restaurant must Open before Closing'),_('500')])
 
             if opening_overlap_entry and opening_overlap_entry[0] != self:
-                raise ValidationError([_('There is an overlap in the Opening hour for this day'), _('501')])
+                raise ValidationError([_('There is an overlap in the Opening Time for this day'), _('501')])
 
             if closing_overlap_entry and closing_overlap_entry[0] != self:
-                raise ValidationError([_('There is an overlap in the Closing hour for this day'), _('502')])
+                raise ValidationError([_('There is an overlap in the Closing Time for this day'), _('502')])
             
             if subset_entry and subset_entry[0] != self:
                 raise ValidationError([_('There is a subset of the Open Period for this day'), _('503')])

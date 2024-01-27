@@ -12,8 +12,9 @@ from django.contrib import messages
 from django.shortcuts import get_object_or_404
 from menu.forms import CategoryForm, FoodItemForm
 from .utils import get_vendor
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.template.defaultfilters import slugify
+from django.middleware.csrf import get_token
 # Create your views here.
 
 
@@ -263,15 +264,15 @@ def add_opening_hours(request):
             else:
                 is_closed = False
             try:
-                OpeningHours.objects.create(vendor=get_vendor(request), day=day, open=open, close=close, is_closed=is_closed)
+                obj = OpeningHours.objects.create(vendor=get_vendor(request), day=day, open=open, close=close, is_closed=is_closed)
             except ValidationError as e:
                 for error in e:
                     if '500' in error[1]:
                         return JsonResponse({'status': 'Failed', 'message': 'Restaurant must Open before Closing', 'code': 500})
                     elif '501' in error[1]:
-                        return JsonResponse({'status': 'Failed', 'message': 'There is an overlap in the Opening hour for this day', 'code': 501})
+                        return JsonResponse({'status': 'Failed', 'message': 'There is an overlap in the Opening Time for this day', 'code': 501})
                     elif '502' in error[1]:
-                        return JsonResponse({'status': 'Failed', 'message': 'There is an overlap in the Closing hour for this day', 'code': 502})
+                        return JsonResponse({'status': 'Failed', 'message': 'There is an overlap in the Closing Time for this day', 'code': 502})
                     elif '503' in error[1]:
                         return JsonResponse({'status': 'Failed', 'message': 'There is a subset of the Open Period for this day', 'code': 503})
                     elif '504' in error[1]:
@@ -287,7 +288,24 @@ def add_opening_hours(request):
             except IntegrityError as i:
                 return JsonResponse({'status': 'Failed', 'message': 'Similar entry exists', 'code': 402})
             else:
-                return JsonResponse({'status': 'Success', 'message': 'New opening hours added', 'code': 200})
+                # Only Success
+                return JsonResponse({'status': 'Success', 'message': 'New opening hours added', 'code': 200, 'new_id': obj.id, 'csrf': get_token(request)})
+        else:
+            return JsonResponse({'status': 'Failed', 'message': 'Invalid Request', 'code': 408})
+    else:
+        return JsonResponse({'status': 'Failed', 'message': 'Please Login to Your Account', 'code': 400})
+
+
+def remove_opening_hours(request, pk):
+    if request.user.is_authenticated:
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest' and request.method == 'DELETE':
+            try:
+                OpeningHours.objects.get(pk=pk).delete()
+            except ObjectDoesNotExist:
+                return JsonResponse({'status': 'Failed', 'message': 'Opening Hours does not exist', 'code': 404})
+            else:
+                # Only Success
+                return JsonResponse({'status': 'Success', 'message': 'Opening Hours removed', 'code': 200, 'new_id': pk})
         else:
             return JsonResponse({'status': 'Failed', 'message': 'Invalid Request', 'code': 408})
     else:
