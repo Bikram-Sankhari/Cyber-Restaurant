@@ -1,4 +1,5 @@
 from django.db import IntegrityError
+from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import user_passes_test, login_required
 from accounts.forms import UserProfileForm
@@ -11,6 +12,7 @@ from django.contrib import messages
 from django.shortcuts import get_object_or_404
 from menu.forms import CategoryForm, FoodItemForm
 from .utils import get_vendor
+from django.core.exceptions import ValidationError
 from django.template.defaultfilters import slugify
 # Create your views here.
 
@@ -248,28 +250,45 @@ def opening_hours(request):
     return render(request, 'vendor/opening_hours.html', context)
 
 
-@login_required(login_url='login')
-@user_passes_test(validate_vendor)
 def add_opening_hours(request):
-    if request.method == 'POST':
-        form = OpeningHoursForm(request.POST)
-        if form.is_valid():
-            opening_hours = form.save(commit=False)
-            opening_hours.vendor = get_vendor(request)
-            opening_hours.save()
-            messages.success(request, 'Opening Hours added successfully')
-            return redirect('opening_hours')
+    if request.user.is_authenticated:
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest' and request.method == 'POST':
+            day = request.POST['day']
+            open = request.POST['open']
+            close = request.POST['close']
+            is_closed = request.POST['is_closed']
+
+            if is_closed == 'true':
+                is_closed = True
+            else:
+                is_closed = False
+            try:
+                OpeningHours.objects.create(vendor=get_vendor(request), day=day, open=open, close=close, is_closed=is_closed)
+            except ValidationError as e:
+                for error in e:
+                    if '500' in error[1]:
+                        return JsonResponse({'status': 'Failed', 'message': 'Restaurant must Open before Closing', 'code': 500})
+                    elif '501' in error[1]:
+                        return JsonResponse({'status': 'Failed', 'message': 'There is an overlap in the Opening hour for this day', 'code': 501})
+                    elif '502' in error[1]:
+                        return JsonResponse({'status': 'Failed', 'message': 'There is an overlap in the Closing hour for this day', 'code': 502})
+                    elif '503' in error[1]:
+                        return JsonResponse({'status': 'Failed', 'message': 'There is a subset of the Open Period for this day', 'code': 503})
+                    elif '504' in error[1]:
+                        return JsonResponse({'status': 'Failed', 'message': 'The Restaurant is closed on this day', 'code': 504})
+                    elif '499' in error[1]:
+                        return JsonResponse({'status': 'Failed', 'message': 'There exist Open Slab(s) for the day', 'code': 499})
+                    elif '498' in error[1]:
+                        return JsonResponse({'status': 'Failed', 'message': 'The Restaurant is already closed on this day', 'code': 498})
+                    else:
+                        print(error)
+                        return JsonResponse({'status': 'Failed', 'message': 'Unknown Error', 'code': 410})
+
+            except IntegrityError as i:
+                return JsonResponse({'status': 'Failed', 'message': 'Similar entry exists', 'code': 402})
+            else:
+                return JsonResponse({'status': 'Success', 'message': 'New opening hours added', 'code': 200})
         else:
-            for field in form:
-                for error in field.errors:
-                    print(error)
-                    messages.error(request, error)
+            return JsonResponse({'status': 'Failed', 'message': 'Invalid Request', 'code': 408})
     else:
-        form = OpeningHoursForm()
-
-    context = {
-        'form': form,
-    }
-
-
-    return render(request, 'vendor/add_opening_hours.html', context)
+        return JsonResponse({'status': 'Failed', 'message': 'Please Login to Your Account', 'code': 400})

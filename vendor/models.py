@@ -91,17 +91,30 @@ class OpeningHours(models.Model):
         closing_overlap_entry = OpeningHours.objects.filter(vendor=self.vendor, day=self.day, open__lte = self.close, close__gte=self.close)
         subset_entry = OpeningHours.objects.filter(vendor=self.vendor, day=self.day, open__gte = self.open, close__lte=self.close)
 
-        if self.open >= self.close:
-            raise ValidationError(_('Restaurant must Open before Closing'), code=500)
+        if self.is_closed:
+            open_slab = OpeningHours.objects.filter(vendor=self.vendor, day=self.day, is_closed=False)
+            if open_slab:
+                raise ValidationError([_('There exist Open Slab(s) for the day'), _('499')])
+            
+            already_closed_entry = OpeningHours.objects.filter(vendor=self.vendor, day=self.day, is_closed=True)
+            if already_closed_entry:
+                raise ValidationError([_('The Restaurant is already closed on this day'),_('498')])
+        else:
+            holiday = OpeningHours.objects.filter(vendor=self.vendor, day=self.day, is_closed=True)
+            if holiday:
+                raise ValidationError([_('The Restaurant is closed on this day'), _('504')])
+                
+            if self.open >= self.close:
+                raise ValidationError([_('Restaurant must Open before Closing'),_('500')])
 
-        if opening_overlap_entry and opening_overlap_entry[0] != self:
-            raise ValidationError(_('There is an overlap in the Opening hour for this day'), code=501)
+            if opening_overlap_entry and opening_overlap_entry[0] != self:
+                raise ValidationError([_('There is an overlap in the Opening hour for this day'), _('501')])
 
-        if closing_overlap_entry and closing_overlap_entry[0] != self:
-            raise ValidationError(_('There is an overlap in the Closing hour for this day'), code=502)
-        
-        if subset_entry and subset_entry[0] != self:
-            raise ValidationError(_('There is a subset of the Open Period for this day'), code=503)
+            if closing_overlap_entry and closing_overlap_entry[0] != self:
+                raise ValidationError([_('There is an overlap in the Closing hour for this day'), _('502')])
+            
+            if subset_entry and subset_entry[0] != self:
+                raise ValidationError([_('There is a subset of the Open Period for this day'), _('503')])
 
         super(OpeningHours, self).clean()
 

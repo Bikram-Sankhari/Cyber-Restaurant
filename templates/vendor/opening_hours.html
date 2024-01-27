@@ -23,9 +23,13 @@
                     {% for hour in opening_hours %}
                   <tr class="row px-3 mb-2" style="border: 1px solid #d6d6d4;">
                     <td class="py-3 text-start col-12 col-sm-3 col-lg-2"><b>{{hour.get_day}}</b></td>
+                    {% if hour.is_closed %}
+                    <td class="py-3 col-11 col-sm-7 col-lg-5"><span class="text-muted">Holiday</span></td>
+                    {% else %}
                     <td class="py-3 col-5 col-sm-3 col-lg-2">{{hour.get_open}}</td>
                     <td class="py-3 px-0 col-1">-</td>
                     <td class="py-3 col-5 col-sm-3 col-lg-2">{{hour.get_close}}</td>
+                    {% endif %}
                     <td class="py-3 px-0 col-12 col-sm-2 col-lg-2">
                         <div class="float-end">
                             <a href="#"><i class="bi bi-pencil-square mx-2" style="color:black"></i></a>
@@ -37,9 +41,11 @@
                 </tbody>
                 </table>
                 {% else %}
-                <h6 class="text-center">Set your Opening Hours and start receiving Orders</h6>
-                <div class="text-center">
+                <h6 class="text-center my-4">Set your Opening Hours and start receiving Orders</h6>
+                <hr>
                 {% endif %}
+                <form action="#">
+                  {% csrf_token %}
                 <div class="container">
                     {% for field in form %}
                     <div class="row mb-2">
@@ -49,14 +55,13 @@
                     {% endfor %}
                     <div class="row">
                         <div class="col-10 col-sm-6 px-0">
-                        <a href="#" class="btn btn-success btn-sm  m-1 px-4 float-end" style="--bs-btn-font-size: .8rem;--bs-btn-bg:#c33332;--bs-btn-border-color:#c33332;--bs-btn-color:white">
+                        <a href="{% url 'add_opening_hours' %}" id="add-opening-hour" class="btn btn-success btn-sm  m-1 px-4 float-end" style="--bs-btn-font-size: .8rem;--bs-btn-bg:#c33332;--bs-btn-border-color:#c33332;--bs-btn-color:white">
                             <i class="bi bi-plus-lg"></i>
                             Add
                         </a>
                     </div>
-                    </div>
                 </div>
-            </div>
+              </form>
         </div>
       </div>
     </div>
