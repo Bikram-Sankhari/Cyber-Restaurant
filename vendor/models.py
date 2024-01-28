@@ -80,8 +80,8 @@ TIME_CHOICES = get_time_choices()
 class OpeningHours(models.Model):
     vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
     day = models.CharField(choices=DAY_CHOICES)
-    open = models.FloatField(choices=TIME_CHOICES)
-    close = models.FloatField(choices=TIME_CHOICES)
+    open = models.FloatField(choices=TIME_CHOICES, blank=True, null=True)
+    close = models.FloatField(choices=TIME_CHOICES, blank=True, null=True)
     is_closed = models.BooleanField(default=False)
 
     def get_day(self):
@@ -113,6 +113,9 @@ class OpeningHours(models.Model):
             already_closed_entry = OpeningHours.objects.filter(vendor=self.vendor, day=self.day, is_closed=True)
             if already_closed_entry:
                 raise ValidationError([_('The Restaurant is already closed on this day'),_('498')])
+            
+            self.open = None
+            self.close = None
         else:
             holiday = OpeningHours.objects.filter(vendor=self.vendor, day=self.day, is_closed=True)
             if holiday:

@@ -106,10 +106,9 @@ function update_details(response) {
 
 function update_amounts(response) {
     try {
-        let gst = (parseFloat(response.subtotal) * 18 / 100).toFixed(2);
-        document.getElementById('subtotal').innerHTML = response.subtotal;
-        document.getElementById('gst').innerHTML = gst;
-        document.getElementById('total').innerHTML = (parseFloat(response.subtotal) + parseFloat(gst)).toFixed(2);
+        document.getElementById('subtotal').innerHTML = response.amounts['subtotal'];
+        document.getElementById('gst').innerHTML = response.amounts['gst'];
+        document.getElementById('total').innerHTML = response.amounts['total'];
     }
 
     catch (err) { }

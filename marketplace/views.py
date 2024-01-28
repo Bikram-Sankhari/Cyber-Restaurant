@@ -14,19 +14,9 @@ from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.gis.measure import D
 from django.contrib.gis.db.models.functions import Distance
 from Restaurant.utils import get_or_set_location
-
+from .utils import get_amounts
 
 # Create your views here.
-
-def get_subtotal(request):
-    subtotal = 0
-    if request.user.is_authenticated:
-        cart_items = Cart.objects.filter(user=request.user)
-        for cart_item in cart_items:
-            subtotal += (cart_item.quantity * cart_item.food_item.price)
-    return format(subtotal, ".2f")
-
-
 def marketplace(request):
     try:
         radius = int(request.GET['radius'])
@@ -152,7 +142,7 @@ def add_to_cart(request, food_id=None):
                                          'message': f'{food_item} Added to Cart',
                                          'code': 200, 'quantity': 1,
                                          'total_quantity': get_food_count(request),
-                                         'subtotal': get_subtotal(request)})
+                                         'amounts': get_amounts(request),})
 
                 else:
                     fooditem_from_cart.quantity += 1
@@ -161,7 +151,7 @@ def add_to_cart(request, food_id=None):
                                          'message': f'Quantity Increased Successfully for {food_item}',
                                          'code': 200, 'quantity': fooditem_from_cart.quantity,
                                          'total_quantity': get_food_count(request),
-                                         'subtotal': get_subtotal(request)})
+                                         'amounts': get_amounts(request),})
 
         else:
             return JsonResponse({'status': 'Failed', 'message': 'Invalid Request', 'code': 408})
@@ -193,7 +183,7 @@ def decrease_cart(request, food_id):
                                              'code': 200,
                                              'quantity': fooditem_from_cart.quantity,
                                              'total_quantity': get_food_count(request),
-                                             'subtotal': get_subtotal(request)})
+                                             'amounts': get_amounts(request),})
 
                     else:
                         return JsonResponse({'status': 'Success',
@@ -211,13 +201,12 @@ def decrease_cart(request, food_id):
 @login_required(login_url='login')
 def cart(request):
     cart_items = Cart.objects.filter(user=request.user)
-    subtotal = get_subtotal(request)
-    gst = format(float(subtotal) * 18 / 100, ".2f")
+    amounts = get_amounts(request)
     context = {
         'cart_items': cart_items,
-        'subtotal': subtotal,
-        'gst': gst,
-        'total': format(float(subtotal) + (float(subtotal) * 18 / 100), ".2f"),
+        'subtotal': amounts['subtotal'],
+        'gst': amounts['gst'],
+        'total': amounts['total'],
     }
     return render(request, 'marketplace/cart.html', context)
 
@@ -243,6 +232,6 @@ def delete_cart(request, food_id):
                                          'message': f'{food_item} Removed from Cart',
                                          'code': 200,
                                          'total_quantity': get_food_count(request),
-                                         'subtotal': get_subtotal(request)})
+                                         'amounts': get_amounts(request),})
         else:
             return JsonResponse({'status': 'Failed', 'message': 'Invalid Request', 'code': 408})
