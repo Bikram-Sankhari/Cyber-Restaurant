@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+  <div class="main-section pt-5">
+    <div class="page-section">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-7 col-md-7 col-sm-12 col-xs-12">
+            <div class="tabs-holder horizontal">
+              <ul class="stickynav-tabs nav nav-tabs">
+                <li class="active">
+                  <a data-toggle="tab" href="#home">
+                    {% block left_container_svg %}
+                      {% comment %}Left Container SVG{% endcomment %}
+                    {% endblock %}
+
+                    {% block left_container_name %}
+                      {% comment %}Left Container Name{% endcomment %}
+                    {% endblock %}
+                  </a>
+                </li>
+              </ul>
+              <div class="tab-content">
+                <div id="home" class="tab-pane in active">
+                  <div class="menu-itam-holder pb-4">
+                    <div id="menu-item-list-6272" class="menu-itam-list">
+                      {% block left_container %}
+                        {% comment %}Left Container{% endcomment %}
+                      {% endblock %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Billing Section -->
+          <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12">
+            <div class="tabs-holder horizontal">
+              <ul class="stickynav-tabs nav nav-tabs">
+                <li class="active">
+                  <a data-toggle="tab" href="#home">
+                    {% block right_container_svg %}
+                      {% comment %}Right Container SVG{% endcomment %}
+                    {% endblock %}
+
+                    {% block right_container_name %}
+                      {% comment %}Right Container Name{% endcomment %}
+                    {% endblock %}
+                  </a>
+                </li>
+              </ul>
+              <div class="tab-content">
+                <div id="home" class="tab-pane in active">
+                  <div class="menu-itam-holder"></div>
+                  {% block right_container %}
+                    {% comment %}Right Container{% endcomment %}
+                  {% endblock %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

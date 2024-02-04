@@ -1,0 +1,116 @@
+{% extends 'orders/framework.html' %}
+
+{% comment %}Left Container SVG{% endcomment %}
+{% block left_container_svg %}
+  <i class="bi bi-list-columns"></i>
+{% endblock %}
+
+{% comment %}Left Container Name{% endcomment %}
+{% block left_container_name %}
+  Delivery Details
+{% endblock %}
+
+{% comment %}Left Container Content{% endcomment %}
+{% block left_container %}
+<form class="form-card" action="{% url 'review_order' %}" method="POST">
+  {% csrf_token %}
+  <div class="row justify-content-center">
+      <div class="col-12">
+        <div class="row">
+          {% for field in form %}
+              {% if field == form.delivery_address %}
+                <div class="col-12">
+              {% else %}
+                <div class="col-12 col-md-6">
+              {% endif %}
+                <div class="input-group">
+                  <label class="mb-1">{{field.label}}</label>
+                  {{field}}
+                </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <input id="checkout_button" type="submit" value="Pay ₹{{ total }}" class="btn btn-danger p-1 mt-1 float-end fs-5" style="width: 11rem;background-color:#0b38da;border-color:#0a0c93;color: white;"/>
+</form>
+     
+{% endblock %}
+
+{% comment %}Right Container SVG{% endcomment %}
+{% block right_container_svg %}
+  <i class="icon- icon-room_service"></i>
+{% endblock %}
+
+{% comment %}Right Container Name{% endcomment %}
+{% block right_container_name %}
+  Your Order
+{% endblock %}
+
+{% comment %}Right Container Content{% endcomment %}
+{% block right_container %}
+  <div class="menu-itam-holder py-2 px-3">
+    <div id="menu-item-list-6272" class="menu-itam-list">
+      <ul id="cart-holder">
+        {% for item in cart_items %}
+          <li id="food-item-{{ item.food_item.pk }}" class="container">
+            <div class="row">
+              <div class="col col-lg-6  ">
+                <div class="image-holder">
+                  <a href="{{ item.food_item.image.url }}"><img src="{{ item.food_item.image.url }}" alt="" /></a>
+                </div>
+                <div class="text-holder">
+                  <h6>{{ item.food_item.food_title }}</h6>
+                </div>
+              </div>
+              <div class="col col-lg-3 ">
+                <div class="text-center">
+                  <span class="price">₹{{ item.food_item.price }}</span>
+                </div>
+              </div>
+
+              <div class="col col-lg-3 ">
+                <div class="text-center">
+                  <label class="text-success fw-bold" id="qty-{{ item.food_item.pk }}">{{ item.quantity }}</label>
+                </div>
+              </div>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <div id="home" class="tab-pane in active">
+    <div class="menu-itam-holder"></div>
+    <div>
+      <ul class="pe-4 pb-3">
+        <li style="list-style-type: none;">
+          Subtotal
+          <span class="price float-end">
+            <span class="currency">₹</span>
+            <span id="subtotal">{{ subtotal }}</span>
+          </span>
+        </li>
+        <li style="list-style-type: none;">
+          GST
+          <span class="price float-end">
+            <span class="currency">₹</span>
+            <span id="gst">{{ gst }}</span>
+          </span>
+        </li>
+        <hr class="hr m-0" />
+        <li class="fw-bold py-2" style="list-style-type: none;">
+          TOTAL
+          <span class="price float-end">
+            <span class="currency">₹</span>
+            <span id="total">{{ total }}</span>
+          </span>
+        </li>
+        <hr class="m-0" />
+      </ul>
+    </form>
+    </div>
+  </div>
+{% endblock %}
