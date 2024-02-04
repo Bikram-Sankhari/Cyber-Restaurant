@@ -24,9 +24,9 @@
                       <div id="menu-item-list-6272" class="menu-itam-list">
                         <ul id="cart-holder">
                           {% for item in cart_items %}
-                            <li id="food-item-{{item.food_item.pk}}">
+                            <li id="food-item-{{ item.food_item.pk }}">
                               <div class="image-holder">
-                                <a href="{{ food.image.url }}"><img src="{{ item.food_item.image.url }}" alt="" /></a>
+                                <a href="{{ item.food_item.image.url }}"><img src="{{ item.food_item.image.url }}" alt="" /></a>
                               </div>
                               <div class="text-holder">
                                 <h6>{{ item.food_item.food_title }}</h6>
@@ -37,7 +37,7 @@
                                 <a href="{% url 'decrease_cart' item.food_item.pk %}" data-id="{{ item.food_item.id }}" class="restaurant-add-menu-btn me-4 decrease-cart"><i class="icon-minus text-color"></i></a>
                                 <label class="text-success" id="qty-{{ item.food_item.pk }}">{{ item.quantity }}</label>
                                 <a href="{% url 'add_to_cart' item.food_item.pk %}" data-id="{{ item.food_item.id }}" class="restaurant-add-menu-btn add-to-cart"><i class="icon-plus4 text-color"></i></a>
-                                <a href="{% url 'delete_cart' item.food_item.pk %}" id="delete-cart-{{item.food_item.id}}" data-id="{{ item.food_item.id }}" class="restaurant-add-menu-btn delete-cart"><i class="icon-trash text-color"></i></a>
+                                <a href="{% url 'delete_cart' item.food_item.pk %}" id="delete-cart-{{ item.food_item.id }}" data-id="{{ item.food_item.id }}" class="restaurant-add-menu-btn delete-cart"><i class="icon-trash text-color"></i></a>
                               </div>
                             </li>
                           {% endfor %}
@@ -66,19 +66,19 @@
                 <div id="home" class="tab-pane in active">
                   <div class="menu-itam-holder"></div>
                   <div>
-                    <ul class="pe-4">
+                    <ul class="pe-4 pb-3">
                       <li style="list-style-type: none;">
                         Subtotal
                         <span class="price float-end">
                           <span class="currency">₹</span>
-                          <span id="subtotal">{{subtotal}}</span>
+                          <span id="subtotal">{{ subtotal }}</span>
                         </span>
                       </li>
                       <li style="list-style-type: none;">
                         GST
                         <span class="price float-end">
                           <span class="currency">₹</span>
-                          <span id="gst">{{gst}}</span>
+                          <span id="gst">{{ gst }}</span>
                         </span>
                       </li>
                       <hr class="hr m-0" />
@@ -86,9 +86,11 @@
                         TOTAL
                         <span class="price float-end">
                           <span class="currency">₹</span>
-                          <span id="total">{{total}}</span>
+                          <span id="total">{{ total }}</span>
                         </span>
                       </li>
+                      <hr class="m-0" />
+                      <a id="checkout_button" href="{% url 'review_order' %}" class="btn btn-danger mt-3 {% if not cart_items %} disabled {% endif %}" style="width: 100%; ">Checkout</a>
                     </ul>
                   </div>
                 </div>

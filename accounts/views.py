@@ -1,36 +1,17 @@
 from django.db import IntegrityError
 from django.shortcuts import render, redirect
 from .forms import UserForm
-from django.http import HttpResponse
 from .models import User, UserProfile
 from django.contrib import messages, auth
 from vendor.forms import VendorForm
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
 from .forms import UserForm
-from .utils import logged_in_redirect, send_verification_email, send_password_reset_email
+from .utils import logged_in_redirect, send_verification_email, send_password_reset_email, validate_customer, validate_vendor
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.core.exceptions import PermissionDenied
 from django.template.defaultfilters import slugify
-from django.contrib.sessions.backends.base import SessionBase
 
 # Create your views here.
-
-
-def validate_customer(user):
-    if user.get_role() == 'customer':
-        return True
-    else:
-        raise PermissionDenied('You are not authorised')
-
-
-def validate_vendor(user):
-    if user.get_role() == 'vendor':
-        return True
-    else:
-        raise PermissionDenied('You are not authorised')
-
-
 def register_user(request):
     if request.user.is_authenticated:
         return logged_in_redirect(request, f"You are logged In as {request.user.username}.\nPlease logout first to register another user!")
@@ -49,7 +30,7 @@ def register_user(request):
             send_verification_email(request, user)
 
             messages.success(
-                request, "Your account has been registered successfully !!!")
+                request, "Account registered. Kindly check your Email !!!")
             return redirect('register_user')
 
         else:
@@ -64,6 +45,8 @@ def register_user(request):
                     request, 'Email Already Registered. Please Login to continue!')
                 return redirect('login')
 
+            username = form['username'].value()
+                
             context = {
                 'form': form,
             }
@@ -110,7 +93,7 @@ def register_vendor(request):
             except IntegrityError:
                 messages.error(request, 'Vendor already registered')
                 return redirect('register_vendor')
-            
+
             messages.success(
                 request, 'Your application is submitted successfully !!!')
             return redirect('register_vendor')
@@ -137,13 +120,12 @@ def login(request):
         return logged_in_redirect(request, "You are already logged In !")
 
     if request.method == 'POST':
-        email = request.POST['email']
+        username = request.POST['username']
         password = request.POST['password']
 
-        user = auth.authenticate(email=email, password=password)
+        user = auth.authenticate(username=username, password=password)
         if user:
             auth.login(request, user)
-            request.session.set_expiry(0)
             messages.success(request, 'You are now Logged In !!!')
             return redirect('my_account')
 
@@ -169,13 +151,6 @@ def logout(request):
 @user_passes_test(validate_vendor)
 def vendor_dashboard(request):
     return render(request, 'accounts/vendor_dashboard.html')
-
-
-@login_required(login_url='login')
-@user_passes_test(validate_customer)
-def customer_dashboard(request):
-    return render(request, 'accounts/customer_dashboard.html')
-
 
 @login_required(login_url='login')
 def my_account(request):
@@ -269,3 +244,10 @@ def reset_password(request):
 
     else:
         return render(request, 'accounts/reset_password.html')
+
+@login_required(login_url='login')
+@user_passes_test(validate_vendor)
+def not_customer(request):
+    messages.info(request, "You are a Vendor and not Authorised to view this Page")
+    print('here')
+    return redirect('my_account')

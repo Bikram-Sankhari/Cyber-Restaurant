@@ -32,16 +32,28 @@ class UserForm(forms.ModelForm):
         confirm_password = cleaned_data.get('confirm_password')
 
         if password != confirm_password:
-            raise forms.ValidationError(
+            raise ValidationError(
                 'Password and Confirm Password do not match')
 
 
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ['profile_picture', 'cover_photo', 'address',
-                   'country', 'state', 'city', 'pin_code', 'latitude', 'longitude']
-        
+        fields = ['profile_picture', 'cover_photo', 'address', 'phone_number',
+                  'country', 'state', 'city', 'pin_code', 'latitude', 'longitude']
+        labels = {
+            'profile_picture': 'Update Profile Picture',
+            'cover_photo': 'Update Cover Photo',
+            'address': 'Address',
+            'phone_number': 'Phone Number',
+            'country': 'Country',
+            'state': 'State',
+            'city': 'City',
+            'pin_code': 'Pin Code',
+            'latitude': 'Latitude',
+            'longitude': 'Longitude',
+        }
+
     def __init__(self, *args, **kwargs):
         super(UserProfileForm, self).__init__(*args, **kwargs)
         self.fields['latitude'].widget.attrs['readonly'] = True

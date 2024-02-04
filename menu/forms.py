@@ -25,12 +25,20 @@ class FoodItemForm(forms.ModelForm):
             "is_available": _("Is Available"),
         }
 
+        common_attrs = {'class': 'form-control',}
+        
+        price_attrs = common_attrs.copy()
+        price_attrs['style'] = 'width:20vw'
+
+        image_attrs = common_attrs.copy()
+        image_attrs['style'] = 'font-size:0.8rem;width:20vw'
+
         widgets = {
-            'category': forms.Select(attrs={'class': 'form-control mb-3'},),
-            'food_title': forms.TextInput(attrs={'class': 'form-control mb-3'}),
-            'price': forms.NumberInput(attrs={'class': 'form-control mb-3', 'style': 'width:20vw'}),
-            'description': forms.Textarea(attrs={'class': 'form-control mb-3'}),
-            'image': forms.FileInput(attrs={'class': 'form-control mb-3', 'style': 'font-size:0.8rem;width:20vw'}),
-            'is_available': forms.CheckboxInput(attrs={'class': 'form-check-input mb-3'}),
+            'category': forms.Select(attrs=common_attrs,),
+            'food_title': forms.TextInput(attrs=common_attrs),
+            'price': forms.NumberInput(attrs=price_attrs),
+            'description': forms.Textarea(attrs=common_attrs),
+            'image': forms.FileInput(attrs=image_attrs),
+            'is_available': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
         

@@ -26,4 +26,5 @@ urlpatterns = [
     path('location_accessed/', views.location_accessed, name='location_accessed'),
     path('accounts/', include('accounts.urls')),
     path('marketplace/', include('marketplace.urls')),
+    path('orders/', include('orders.urls')),
 ] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

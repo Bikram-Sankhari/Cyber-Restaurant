@@ -11,8 +11,8 @@
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700,800" />
     <!-- Google Font Family Link End -->
 
-    {% comment %} Preventing Favicon.ico to load {% endcomment %}
-    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+    {% comment %}Preventing Favicon.ico to load{% endcomment %}
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=" />
 
     <!-- CSS -->
     <link href="{% static 'assets/css/iconmoon.css' %}" rel="stylesheet" />
@@ -46,18 +46,19 @@
   </head>
   <body>
     {% include 'includes/navbar.html' %}
+    {% include 'includes/success_alert.html' %}
     {% block content %}
 
     {% endblock %}
     {% include 'includes/footer.html' %}
   </body>
-  {% if 'profile' in request.path or request.path == '/' %}
-    <script src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_API_KEY }}&libraries=places&callback=initAutoComplete" async defer></script>
+  {% if 'profile' in request.path or request.path == '/' or 'review-order' in request.path %}
+    <script async id="google-script" src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_API_KEY }}&libraries=places&callback=initAutoComplete" async defer></script>
   {% endif %}
   <script type="text/javascript" src="{% static 'assets/js/custom.js' %}"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script>
+  <script id="to-be-deleted">
     var google_api_key = '{{GOOGLE_API_KEY}}'
     var current_location = sessionStorage.getItem('current_location')
     if (current_location != '') {

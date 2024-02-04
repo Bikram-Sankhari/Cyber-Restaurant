@@ -57,7 +57,9 @@ function onPlaceChanged() {
                         document.getElementById('id_pin_code').value = "";
                     }
                 }
-                catch (err) { }
+                catch (err) {
+                    console.log(err);
+                 }
             }
         }
 
@@ -124,6 +126,10 @@ function handle_empty_cart() {
         h3.appendChild(empty_label);
         div.appendChild(h3);
         cart_holder.appendChild(div);
+
+        checkout_button = document.getElementById('checkout_button')
+        checkout_button.classList.add("disabled");
+        checkout_button.innerHTML= "No Items to Checkout";
     }
 }
 
@@ -134,6 +140,22 @@ function get_days_map() {
         days_map.set(String(i), days_of_week[i - 1]);
     }
     return days_map;
+}
+
+function confirm_deletion(url, message) {
+    Swal.fire({
+        title: "Confirmation",
+        text: message,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#c33332",
+        cancelButtonColor: "grey",
+        confirmButtonText: "Yes, Delete"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location = url;
+        }
+    });
 }
 
 function get_times_map() {
@@ -149,11 +171,24 @@ function get_times_map() {
         minutes = start_time.getMinutes();
         if (hour < 12) {
             if (hour < 10) {
-                if (minutes < 10) {
-                    times_map.set(String(i), "0" + hour + ":0" + minutes + " AM");
+                if (hour < 1) {
+                    hour = 12;
+
+                    if (minutes < 10) {
+                        times_map.set(String(i), hour + ":0" + minutes + " AM");
+                    }
+                    else {
+                        times_map.set(String(i), hour + ":" + minutes + " AM");
+                    }
                 }
+
                 else {
-                    times_map.set(String(i), "0" + hour + ":" + minutes + " AM");
+                    if (minutes < 10) {
+                        times_map.set(String(i), "0" + hour + ":0" + minutes + " AM");
+                    }
+                    else {
+                        times_map.set(String(i), "0" + hour + ":" + minutes + " AM");
+                    }
                 }
             }
 
@@ -210,8 +245,88 @@ function get_times_map() {
     return times_map;
 }
 
+function remove_opening_hour() {
+    $('.remove_opening_hour').on('click', function (e) {
+        e.preventDefault();
+        url = $(this).attr('href');
+        csrf_token = $(this).parent("div").find('input[name="csrfmiddlewaretoken"]').val();
+
+        headers = {
+            'X-CSRFToken': csrf_token,
+        }
+
+        if ($(this).attr('data-is-holiday') == undefined) {
+            message = "Remove " + $(this).attr('data-open') + " to " + $(this).attr('data-close') + " Open hours for " + $(this).attr('data-day') + "??"
+        }
+
+        else {
+            message = "Remove Holiday for " + $(this).attr('data-day') + "??"
+        }
+
+        Swal.fire({
+            title: "Are you sure?",
+            text: message,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#c33332",
+            cancelButtonColor: "grey",
+            confirmButtonText: "Yes, Remove"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: 'DELETE',
+                    url: url,
+                    headers: headers,
+                    success: function (response) {
+                        if (response.status == 'Success') {
+                            document.getElementById(response.new_id).remove();
+
+                            tbody = document.getElementById('table-body');
+                            rows = tbody.querySelectorAll('tr');
+
+                            if (rows.length == 0) {
+                                $('table').remove();
+                                no_opening_hour = document.createElement('h6');
+                                no_opening_hour_text = document.createTextNode('Set your Opening Hours and start receiving Orders');
+                                no_opening_hour_hr = document.createElement('hr');
+
+                                no_opening_hour.appendChild(no_opening_hour_text);
+                                no_opening_hour.setAttribute('id', 'no_opening_hours');
+                                no_opening_hour.setAttribute('class', 'text-center my-4');
+
+                                top_hr = document.getElementById('top-hr');
+
+                                top_hr.insertAdjacentElement('afterend', no_opening_hour);
+                                no_opening_hour.insertAdjacentElement('afterend', no_opening_hour_hr);
+
+                            }
+                        }
+
+                        else {
+                            Swal.fire({
+                                title: "Oops!",
+                                text: response.message,
+                                icon: "info"
+                            });
+                        }
+                    }
+                })
+            }
+        })
+
+    })
+}
+
 // Add, Remove and Delete functionalitites of Cart
 $(document).ready(function () {
+    $('#to-be-deleted').remove();
+
+    try {
+        $('#google-script').remove();
+    }
+
+    catch (err) { }
+
     $('.add-to-cart').on('click', function (e) {
         e.preventDefault();
         url = $(this).attr('href');
@@ -431,6 +546,7 @@ $(document).ready(function () {
                         open_column.setAttribute('class', 'py-3 col-5 col-sm-3 col-lg-2');
 
                         new_row.appendChild(open_column);
+
                         // Hyphen
                         hyphen_column = document.createElement('td');
                         hyphen_text = document.createTextNode('-');
@@ -467,13 +583,14 @@ $(document).ready(function () {
 
 
                     delete_i.setAttribute('class', 'bi bi-trash mx-2');
-                    delete_i.setAttribute('style', 'color:grey;');
+                    delete_i.setAttribute('style', 'color:red;');
                     delete_a.appendChild(delete_i);
+                    delete_a.append(delete_i);
 
                     delete_a.setAttribute('href', '/accounts/vendor/opening-hours/remove/' + response.new_id + '/');
                     delete_a.setAttribute('class', 'remove_opening_hour');
-                    delete_a.setAttribute('style',  'pointer-events: none;');
                     delete_a.setAttribute('data-day', day_str);
+
 
                     if (is_closed) {
                         delete_a.setAttribute('data-is-holiday', '');
@@ -488,7 +605,7 @@ $(document).ready(function () {
                     items_div.appendChild(delete_a);
 
                     items_div.setAttribute('class', 'float-end');
-                    items_div.setAttribute('title', 'Refresh First');
+                    // items_div.setAttribute('title', 'Refresh First');
 
                     items_column.appendChild(items_div);
                     items_column.setAttribute('class', 'py-3 px-0 col-12 col-sm-2 col-lg-2');
@@ -565,6 +682,7 @@ $(document).ready(function () {
                         }
                     }
 
+                    remove_opening_hour();
                 }
 
                 else {
@@ -578,74 +696,20 @@ $(document).ready(function () {
         })
     })
 
-    $('.remove_opening_hour').on('click', function (e) {
+    remove_opening_hour();
+
+    $('.delete_food_item').on('click', function (e) {
         e.preventDefault();
-        url = $(this).attr('href');
-        csrf_token = $(this).parent("div").find('input[name="csrfmiddlewaretoken"]').val();
+        url = $(this).attr('href')
+        message = "You are about to delete " + $(this).attr('data-food') + " from category " + $(this).attr('data-category')
+        confirm_deletion(url, message)
+    })
 
-        headers = {
-            'X-CSRFToken': csrf_token,
-        }
-
-        if ($(this).attr('data-is-holiday') == undefined) {
-            message = "Remove " + $(this).attr('data-open') + " to " + $(this).attr('data-close') + " Open hours for " + $(this).attr('data-day') + "??"
-        }
-        
-        else {
-            message = "Remove Holiday for " + $(this).attr('data-day') + "??"
-        }
-
-        Swal.fire({
-            title: "Are you sure?",
-            text: message,
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#c33332",
-            cancelButtonColor: "grey",
-            confirmButtonText: "Yes, Remove"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    type: 'DELETE',
-                    url: url,
-                    headers: headers,
-                    success: function (response) {
-                        if (response.status == 'Success') {
-                            document.getElementById(response.new_id).remove();
-
-                            tbody = document.getElementById('table-body');
-                            rows = tbody.querySelectorAll('tr');
-
-                            if(rows.length == 0){
-                                $('table').remove();
-                                no_opening_hour = document.createElement('h6');
-                                no_opening_hour_text = document.createTextNode('Set your Opening Hours and start receiving Orders');
-                                no_opening_hour_hr = document.createElement('hr');
-
-                                no_opening_hour.appendChild(no_opening_hour_text);
-                                no_opening_hour.setAttribute('id', 'no_opening_hours');
-                                no_opening_hour.setAttribute('class', 'text-center my-4');
-
-                                top_hr = document.getElementById('top-hr');
-
-                                top_hr.insertAdjacentElement('afterend', no_opening_hour);
-                                no_opening_hour.insertAdjacentElement('afterend', no_opening_hour_hr);
-
-                            }
-                        }
-
-                        else {
-                            Swal.fire({
-                                title: "Oops!",
-                                text: response.message,
-                                icon: "info"
-                            });
-                        }
-                    }
-                })
-            }
-        })
-
+    $('.delete_category').on('click', function (e) {
+        e.preventDefault();
+        url = $(this).attr('href')
+        message = "You are about to delete " + $(this).attr('data-category') + " category"
+        confirm_deletion(url, message)
     })
 })
 
@@ -672,13 +736,9 @@ function success(position) {
         success: function (response) {
             if (response.status == "OK") {
                 var address = response.results[0].formatted_address;
-                try {
-                    document.getElementById('id_address').value = address;
-                }
-                catch (err) { }
                 document.getElementById('current-location').value = address;
                 sessionStorage.setItem('current_location', address);
-                window.location = home_url + "?longitude=" + longitude + "&latitude=" + latitude;
+                window.location = home_url + "?longitude=" + longitude + "&latitude=" + latitude + "&current_url=" + window.location.href;
             }
             else {
                 error(response);

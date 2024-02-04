@@ -7,6 +7,7 @@ from django.template.loader import render_to_string
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
 from django.conf import settings
+from django.core.exceptions import PermissionDenied
 
 
 def logged_in_redirect(request, message):
@@ -60,3 +61,16 @@ def send_approval_mail(vendor):
     mail = EmailMessage(
         subject, message, settings.DEFAULT_FROM_EMAIL, to=[to_mail,])
     mail.send()
+
+
+def validate_customer(user):
+    if user.get_role() == 'customer':
+        return True
+    else:
+        raise PermissionDenied('You are not authorised')
+
+def validate_vendor(user):
+    if user.get_role() == 'vendor':
+        return True
+    else:
+        raise PermissionDenied('You are not authorised')

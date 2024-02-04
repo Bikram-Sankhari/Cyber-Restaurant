@@ -175,10 +175,7 @@ def add_food(request):
             else:
                 messages.success(request, 'Food Item added successfully')
             return redirect('fooditems_by_category', food.category.pk)
-        else:
-            for field in form:
-                for error in field.errors:
-                    messages.error(request, error)
+ 
     else:
         form = FoodItemForm()
         form.fields['category'].queryset = Category.objects.filter(vendor=get_vendor(request))

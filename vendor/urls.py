@@ -1,7 +1,9 @@
 from django.urls import path
 from . import views
+from accounts import views as AccountViews
 
 urlpatterns = [
+    path('Dashboard/', AccountViews.vendor_dashboard, name='vendor_dashboard'),
     path('profile/', views.vendor_profile, name='vendor_profile'),
     path('menu-builder/', views.menu_builder, name='menu_builder'),
     path('menu-builder/category/<int:pk>/', views.fooditems_by_category, name='fooditems_by_category'),

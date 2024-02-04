@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="main-section">
-  {% include 'includes/cover.html' %}
+  {% include 'includes/vendor_cover.html' %}
   <div class="page-section account-header buyer-logged-in">
     <div class="container">
         {% include 'includes/success_alert.html' %}
@@ -50,7 +50,7 @@
                       {% endif %}
                     </td>
                     <td class="py-3" style="width: 10vw;"><a href="{% url 'edit_food' item.pk %}"><i class="bi bi-pencil-square" style="color:black"></i></a></td>
-                    <td class="py-3" style="width: 10vw;"><a href="{% url 'delete_food' item.pk %}" onclick="return confirm('Confirm Delete \'{{item | upper}}\' from Menu')"><i class="bi bi-trash" style="color:red"></i></a></td>
+                    <td class="py-3" style="width: 10vw;"><a href="{% url 'delete_food' item.pk %}" class="delete_food_item" data-food="{{item | upper}}" data-category="{{category | upper}}"><i class="bi bi-trash" style="color:red"></i></a></td>
                   </tr>
                   {% endfor %}
                 </tbody>

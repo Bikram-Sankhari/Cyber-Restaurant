@@ -25,3 +25,18 @@ def get_amounts(request):
         total = format(total, ".2f")
         
     return {'subtotal': subtotal, 'gst': gst, 'total': total}
+
+def get_cart_items(request):
+    return Cart.objects.filter(user=request.user)
+
+def get_cart_context(request):
+    cart_items = get_cart_items(request)
+    amounts = get_amounts(request)
+    context = {
+        'cart_items': cart_items,
+        'subtotal': amounts['subtotal'],
+        'gst': amounts['gst'],
+        'total': amounts['total'],
+    }
+
+    return context

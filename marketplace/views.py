@@ -13,8 +13,8 @@ from django.db.models import Q
 from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.gis.measure import D
 from django.contrib.gis.db.models.functions import Distance
-from Restaurant.utils import get_or_set_location
-from .utils import get_amounts
+from Restaurant.utils import get_location
+from .utils import get_amounts, get_cart_context
 
 # Create your views here.
 def marketplace(request):
@@ -33,7 +33,7 @@ def marketplace(request):
             longitude = float(request.GET['long'])
 
         except ValueError:
-            if get_or_set_location(request):
+            if get_location(request):
                 latitude = request.session['latitude']
                 longitude = request.session['longitude']
             
@@ -200,14 +200,7 @@ def decrease_cart(request, food_id):
 
 @login_required(login_url='login')
 def cart(request):
-    cart_items = Cart.objects.filter(user=request.user)
-    amounts = get_amounts(request)
-    context = {
-        'cart_items': cart_items,
-        'subtotal': amounts['subtotal'],
-        'gst': amounts['gst'],
-        'total': amounts['total'],
-    }
+    context = get_cart_context(request)
     return render(request, 'marketplace/cart.html', context)
 
 

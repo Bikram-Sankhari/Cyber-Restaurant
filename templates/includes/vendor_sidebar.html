@@ -2,7 +2,7 @@
     <div class="user-nav-list">
       <ul>
       {% comment %} Dashboard {% endcomment %}
-      <li {% if request.path == '/accounts/vendorDashboard/' %}class="active"{% endif %}>
+      <li {% if request.path == '/accounts/vendor/Dashboard/' %}class="active"{% endif %}>
         <a href="{% url 'vendor_dashboard' %}"><i class="icon-dashboard3"></i>Dashboard</a>
       </li>
 

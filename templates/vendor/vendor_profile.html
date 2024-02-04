@@ -3,7 +3,7 @@
 
 {% block content %}
   <div class="main-section">
-    {% include 'includes/cover.html' %}
+    {% include 'includes/vendor_cover.html' %}
     <div class="page-section account-header buyer-logged-in">
       <div class="container">
         {% include 'includes/success_alert.html' %}
@@ -102,7 +102,7 @@
                           </div>
                           <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                             <div class="field-holder">
-                              <label>Restaurant name *</label>
+                              <label>Restaurant name</label>
                               {{ vendor_form.vendor_name }}
                             </div>
                             {% if vendor_form.vendor_name.errors %}
@@ -114,9 +114,9 @@
                             {% endif %}
                           </div>
 
-                          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                          <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <div class="field-holder">
-                              <label>Address *</label>
+                              <label>Address</label>
                               {{ user_profile_form.address }}
                             </div>
                             {% if user_profile_form.address.errors %}
@@ -130,7 +130,21 @@
 
                           <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <div class="field-holder">
-                              <label>Country *</label>
+                              <label>Contact Number</label>
+                              {{ user_profile_form.phone_number }}
+                            </div>
+                            {% if user_profile_form.phone_number.errors %}
+                              <ul class="errorlist">
+                                {% for error in user_profile_form.phone_number.errors %}
+                                  <li style="color:red">*{{ error }}</li>
+                                {% endfor %}
+                              </ul>
+                            {% endif %}
+                          </div>
+
+                          <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                            <div class="field-holder">
+                              <label>Country</label>
                               {{ user_profile_form.country }}
                             </div>
                             {% if user_profile_form.country.errors %}
@@ -144,7 +158,7 @@
 
                           <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <div class="field-holder">
-                              <label>State *</label>
+                              <label>State</label>
                               {{ user_profile_form.state }}
                             </div>
                             {% if user_profile_form.state.errors %}
@@ -158,7 +172,7 @@
 
                           <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <div class="field-holder">
-                              <label>City *</label>
+                              <label>City</label>
                               {{ user_profile_form.city }}
                             </div>
                             {% if user_profile_form.city.errors %}
@@ -172,7 +186,7 @@
 
                           <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <div class="field-holder">
-                              <label>Pin Code *</label>
+                              <label>Pin Code</label>
                               {{ user_profile_form.pin_code }}
                             </div>
                             {% if user_profile_form.pin_code.errors %}
@@ -186,7 +200,7 @@
 
                           <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <div class="field-holder">
-                              <label>Latitude *</label>
+                              <label>Latitude</label>
                               {{ user_profile_form.latitude }}
                             </div>
                             {% if user_profile_form.latitude.errors %}
@@ -200,7 +214,7 @@
 
                           <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                             <div class="field-holder">
-                              <label>Longitude *</label>
+                              <label>Longitude</label>
                               {{ user_profile_form.longitude }}
                             </div>
                             {% if user_profile_form.longitude.errors %}

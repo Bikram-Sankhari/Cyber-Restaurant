@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="main-section">
-  {% include 'includes/cover.html' %}
+  {% include 'includes/vendor_cover.html' %}
   <div class="page-section account-header buyer-logged-in">
     <div class="container">
         {% include 'includes/success_alert.html' %}
@@ -22,7 +22,7 @@
                   Back
                 </a>
                 <h6>Add New Food</h6>
-                <form action="{% url 'add_food' %}" method="POST" enctype="multipart/form-data">
+                <form novalidate action="{% url 'add_food' %}" method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="form-fields-set">
                       <div class="row">
@@ -30,9 +30,16 @@
                         {% for field in form %}
                         <div class="col-lg-12 col-md-12 col-sm-12">
                           <div class="field-holder mb-0">
-                            <label>{{field.label}}</label>
+                            <label class="mt-4">{{field.label}}</label>
                             {{field}}
                           </div>
+                          {% if field.errors %}
+                          <ul class="errorlist">
+                            {% for error in field.errors %}
+                              <li style="color:red; font-size: 0.8rem;">*{{ error }}</li>
+                            {% endfor %}
+                          </ul>
+                          {% endif %}
                         </div>
                         {% endfor %}
                        

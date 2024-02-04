@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from vendor.models import Vendor
-from . utils import get_or_set_location
+from . utils import get_location, set_location
 from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.gis.measure import D
 from django.contrib.gis.db.models.functions import Distance
@@ -8,7 +8,7 @@ from django.contrib import messages
 
 
 def home(request):
-    if get_or_set_location(request):
+    if get_location(request):
         longitude = request.session['longitude']
         latitude = request.session['latitude']
         current_point = GEOSGeometry(
@@ -30,6 +30,6 @@ def home(request):
     return render(request, 'index.html', context)
 
 def location_accessed(request):
-    get_or_set_location(request)
+    current_url = set_location(request, request.GET['longitude'], request.GET['latitude'], request.GET['current_url'])
     messages.success(request, 'Your location has been updated')
-    return redirect('home')
+    return redirect(current_url)

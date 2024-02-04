@@ -54,7 +54,6 @@ class User(AbstractBaseUser):
     last_name = models.CharField(max_length=56)
     username = models.CharField(max_length=128, unique=True)
     email = models.EmailField(max_length=128, unique=True)
-    phone_number = models.CharField(max_length=12, blank=True)
     role = models.PositiveSmallIntegerField(
         choices=RESTAURANT_CHOICES, blank=True, null=True)
 
@@ -67,8 +66,8 @@ class User(AbstractBaseUser):
     is_staff = models.BooleanField(default=False)
     is_superadmin = models.BooleanField(default=False)
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['email', 'first_name', 'last_name']
 
     objects = UserManager()
 
@@ -96,9 +95,10 @@ class UserProfile(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, blank=True, null=True)
     profile_picture = models.ImageField(
-        upload_to='users/profile_pictures', blank=True, null=True, default='unknown.jpg')
+        upload_to='users/profile_pictures', default='unknown.jpg')
     cover_photo = models.ImageField(
-        upload_to='users/cover_pictures', blank=True, null=True, default='unknown.jpg')
+        upload_to='users/cover_pictures', default='unknown.jpg')
+    phone_number = models.CharField(max_length=12, blank=True)
     address = models.CharField(max_length=500, blank=True, null=True)
     country = models.CharField(max_length=15, blank=True, null=True)
     state = models.CharField(max_length=15, blank=True, null=True)

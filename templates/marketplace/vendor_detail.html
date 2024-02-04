@@ -41,7 +41,9 @@
                         Closed
                       {% endif %}
 
-                      <i class="icon-chevron-small-down"></i>
+                      {% if open_hours %}
+                        <i class="icon-chevron-small-down"></i>
+                      {% endif %}
                     </a>
                     <ul class="delivery-dropdown">
                       {% for hour in open_hours %}
