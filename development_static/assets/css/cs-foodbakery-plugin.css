@@ -742,18 +742,18 @@ ul.sub-nav li a { line-height: 20px; }
 .menu-itam-holder .menu-itam-list ul li { display: inline-block; list-style: none; border-bottom: 1px solid #ebedf3; padding-bottom: 15px; margin-bottom: 15px; width: 100%; position: relative; }
 .menu-itam-holder .menu-itam-list ul:last-child li:last-child { border-bottom: 0; padding-bottom: 0; }
 .menu-itam-holder .menu-itam-list.delight ul li:last-child { border: none; padding-bottom: 0; margin-bottom: 0; }
-.menu-itam-holder .menu-itam-list .image-holder { display: inline-block; width: 65px; height: 65px; vertical-align: top; }
+.menu-itam-holder .menu-itam-list .image-holder { display: inline-block; width: 4rem; height: 4rem; vertical-align: top; }
 .menu-itam-holder .menu-itam-list .image-holder a { display: block; position: relative; }
 .menu-itam-holder .menu-itam-list .image-holder a:before { opacity: 0; -webkit-transition: all 0.3s ease-in-out; -moz-transition: all 0.3s ease-in-out; transition: all 0.3s ease-in-out; content: ''; position: absolute; left: 0; top: 0; background: rgba(0, 0, 0, 0.3); width: 100%; height: 100%; -webkit-transform: scale(0); -moz-transform: scale(0); -ms-transform: scale(0); transform: scale(0); }
 .menu-itam-holder .menu-itam-list .image-holder:hover a:before { -webkit-transform: scale(1); -moz-transform: scale(1); -ms-transform: scale(1); transform: scale(1); opacity: 1; }
 .menu-itam-holder .menu-itam-list .image-holder a:after { opacity: 0; font-size: 20px; -webkit-transition: all 0.3s ease-in-out; -moz-transition: all 0.3s ease-in-out; transition: all 0.3s ease-in-out; content: '\ea0b'; font-family: 'icomoon'; position: absolute; left: 20px; top: 20px; -webkit-transform: scale(0); -moz-transform: scale(0); -ms-transform: scale(0); transform: scale(0); color: #fff; }
 .menu-itam-holder .menu-itam-list .image-holder:hover a:after { -webkit-transform: scale(1); -moz-transform: scale(1); -ms-transform: scale(1); transform: scale(1); opacity: 1; }
 .menu-itam-holder .menu-itam-list .image-holder img { max-width: 100%; }
-.menu-itam-holder .menu-itam-list .image-holder + .text-holder { padding-left: 10px; width: -webkit-calc(100% - 170px); width: -moz-calc(100% - 170px); width: calc(100% - 170px); }
+.menu-itam-holder .menu-itam-list .image-holder + .text-holder { padding-left: 10px;}
 .menu-itam-holder .menu-itam-list .nutri-icons li { width: auto; max-width: 16px; margin-right: 5px; margin-bottom: 0; padding-bottom: 0; border-bottom: 0; margin-bottom: 5px; }
 .menu-itam-holder .menu-itam-list .nutri-icons li img { height: 16px; }
 .tooltip { white-space: nowrap; }
-.menu-itam-holder .menu-itam-list .text-holder { display: inline-block; width: -webkit-calc(100% - 150px); width: -moz-calc(75% - 150px); width: -moz-calc(100% - 150px); width: calc(100% - 150px); }
+.menu-itam-holder .menu-itam-list .text-holder { display: inline-block;}
 .menu-itam-holder .menu-itam-list .text-holder h6 { margin: 0; font-weight: normal; }
 .menu-itam-holder .menu-itam-list .text-holder span { font-size: 12px; color: #a9a9a9; display: block; line-height: 16px; }
 .menu-itam-holder .menu-itam-list .price-holder { top: 50%; position: absolute; right: 0; -webkit-transform: translateY(-50%); -moz-transform: translateY(-50%); -ms-transform: translateY(-50%); transform: translateY(-50%); line-height: 0; display: block; margin-top: -10px; }
@@ -2051,8 +2051,6 @@ h4, h4 a{
 font:700 Normal  18px/24px "Montserrat", sans-serif !important;letter-spacing: 1px !important;text-transform: capitalize !important;color: #000000 !important;	    }
 h5, h5 a{
 font:700 Normal  16px/22px "Montserrat", sans-serif !important;letter-spacing: 0px !important;text-transform: capitalize !important;color: #000000 !important;	    }
-h6, h6 a{
-font:700 Normal  14px/20px "Montserrat", sans-serif !important;letter-spacing: 1px !important;text-transform: capitalize !important;color: #000000 !important;	    }
 .cs-section-title h2{
 font:700 Normal  18px/26px "Montserrat", sans-serif !important;letter-spacing: 1px !important;text-transform: capitalize !important;color: #000000 !important;	    }
 .post-title h3 a{

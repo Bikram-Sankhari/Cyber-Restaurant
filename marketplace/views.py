@@ -14,7 +14,7 @@ from django.contrib.gis.geos import GEOSGeometry
 from django.contrib.gis.measure import D
 from django.contrib.gis.db.models.functions import Distance
 from Restaurant.utils import get_location
-from .utils import get_amounts, get_cart_context
+from .utils import get_amounts, get_cart_context, get_cart_items, get_food_item_in_cart
 
 # Create your views here.
 def marketplace(request):
@@ -97,7 +97,7 @@ def marketplace(request):
 def vendor_detail(request, vendor_slug):
     food_items_in_cart = None
     if request.user.is_authenticated:
-        food_items_in_cart = Cart.objects.filter(user=request.user)
+        food_items_in_cart = get_cart_items(request)
 
     vendor = get_object_or_404(Vendor, vendor_slug=vendor_slug)
     vendor_open = OpeningHours.objects.filter(vendor=vendor).order_by('day', 'open')
@@ -132,8 +132,7 @@ def add_to_cart(request, food_id=None):
                 return JsonResponse({'status': 'Failed', 'message': 'No Food Item Found with this ID', 'code': 404})
             else:
                 try:
-                    fooditem_from_cart = Cart.objects.get(
-                        user=request.user, food_item=food_item)
+                    fooditem_from_cart = get_food_item_in_cart(request, food_item)
                 except:
                     new_cart_item = Cart.objects.create(
                         user=request.user, food_item=food_item, quantity=1)
@@ -169,8 +168,7 @@ def decrease_cart(request, food_id):
                 return JsonResponse({'status': 'Failed', 'message': 'No Food Item Found with this ID', 'code': 404})
             else:
                 try:
-                    fooditem_from_cart = Cart.objects.get(
-                        user=request.user, food_item=food_item)
+                    fooditem_from_cart = get_food_item_in_cart(request, food_item)
                 except:
                     return JsonResponse({'status': 'Failed', 'message': 'This Item is not in your Cart', 'code': 405})
 
@@ -214,8 +212,7 @@ def delete_cart(request, food_id):
                 return JsonResponse({'status': 'Failed', 'message': 'No Food Item Found with this ID', 'code': 404})
             else:
                 try:
-                    fooditem_from_cart = Cart.objects.get(
-                        user=request.user, food_item=food_item)
+                    fooditem_from_cart = get_food_item_in_cart(request, food_item)
                 except:
                     return JsonResponse({'status': 'Failed', 'message': 'This Item is not in your Cart', 'code': 405})
 

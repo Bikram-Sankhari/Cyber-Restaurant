@@ -27,7 +27,10 @@ def get_amounts(request):
     return {'subtotal': subtotal, 'gst': gst, 'total': total}
 
 def get_cart_items(request):
-    return Cart.objects.filter(user=request.user)
+    return Cart.objects.filter(user=request.user, order_status='Unordered')
+
+def get_food_item_in_cart(request, food_item):
+    return Cart.objects.get(user=request.user, food_item=food_item, order_status='Unordered')
 
 def get_cart_context(request):
     cart_items = get_cart_items(request)

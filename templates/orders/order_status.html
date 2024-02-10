@@ -1,0 +1,207 @@
+{% extends 'orders/framework.html' %}
+{% load static %}
+
+{% comment %}Left Container SVG{% endcomment %}
+{% block left_container_svg %}
+  <i class="icon- icon-room_service"></i>
+{% endblock %}
+
+{% comment %}Left Container Name{% endcomment %}
+{% block left_container_name %}
+  My Order
+{% endblock %}
+
+{% comment %}Left Container Content{% endcomment %}
+{% block left_container %}
+  <div class="menu-itam-holder pb-1">
+    <div id="menu-item-list-6272" class="menu-itam-list">
+      <div class="menu-itam-holder py-2 px-4">
+        <div id="menu-item-list-6272" class="menu-itam-list">
+          <ul id="cart-holder">
+            {% for item in cart_items %}
+              <li id="food-item-{{ item.food_item.pk }}" class="container px-0 pb-0 mb-0 mb-4">
+                <div class="row">
+                  <div class="image-holder col col-lg-3 px-0 mb-0 ms-2 align-items-center d-flex">
+                    <a href="{{ item.food_item.image.url }}"><img src="{{ item.food_item.image.url }}" alt="" /></a>
+                  </div>
+                  <div class="text-holder ms-3 col col-lg-3 align-items-center d-flex">
+                    <h6 style="font-size:0.9rem;font: Normal 'Open Sans', sans-serif;">{{ item.food_item.food_title }} × {{ item.quantity }}</h6>
+                  </div>
+                  <div class="col col-lg-3 align-items-center d-flex">
+                    <span class="price px-3">₹{{ item.food_item.price }} × {{ item.quantity }}</span>
+                  </div>
+
+                  <div class="col col-lg-3 align-items-center d-flex">
+                    <label class="text-success fw-bold px-3" id="qty-{{ item.food_item.pk }}">=&nbsp;&nbsp;&nbsp;₹{{ item.total_price }}</label>
+                  </div>
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+          <div class="container" style="border: solid #c33332 1px;">
+            <div class="row">
+              <div class="pe-0 pt-0 col col-12 col-sm-10 align-items-center d-flex justify-content-center">
+                <div style="color: #c33332;" class="fs-4">
+                  {% if order.status == 'Completed' %}
+                    !!! Your Order is getting Cooked !!!
+                  {% elif order.status == 'Failed' %}
+                    OOPS !!! Your payment Failed
+                  {% else %}
+                  We are working on your Payment
+                  {% endif %}
+                </div>
+              </div>
+              <div class="col col-12 col-sm-2 px-0">
+                {% if order.status == 'Completed' %}
+                  <svg fill="#c33332" width="5rem" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-211.79 -211.79 883.99 883.99" xml:space="preserve" stroke="#c33332" transform="rotate(0)">
+                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="3.6832640000000003"></g>
+                    <g id="SVGRepo_iconCarrier">
+                      <g id="XMLID_105_">
+                        <path id="XMLID_109_" d="M178.119,164.886c14.811,1.093,14.468,1.068,39.286,2.899l43.727-13.856l38.776,51.818h-27.198 c-0.155,5.164-1.393,10.1-3.65,14.662h28.156c4.328,11.392,15.34,19.49,28.25,19.49h57.548c16.688,0,30.216-13.528,30.216-30.216 c0-2.17-1.759-3.929-3.929-3.929l-89.75-0.007l-43.894-58.657c5.116-5.024,7.303-12.663,4.989-19.965 c-3.279-10.35-14.327-16.083-24.677-12.801l-3.905,1.238l-5.117-6.838c-2.604-3.477-7.53-4.184-11.008-1.584 c-3.476,2.603-4.186,7.53-1.584,11.007l1.831,2.447l-31.651,10.03l-39.613-22.196c-4.604-8.763-13.788-14.742-24.374-14.742h-49.08 c-15.2,0-27.522,12.322-27.522,27.522v64.004l0,0h46.611c0-16.344,0-17.28,0-28.192l-2.425-8.363l33.758,59.949 c3.156,5.602,8.965,9.463,15.683,9.959l78.326,5.78c10.87,0.799,20.258-7.404,21.051-18.158 c0.778-10.538-7.101-20.235-18.158-21.051l-67.814-5.004l-30.571-54.288C170.703,157.207,167.865,154.27,178.119,164.886z"></path> <path id="XMLID_987_" d="M372.231,136.142c-0.182,1.238,0.279,2.479,1.128,3.038c0.849,0.56,1.879,0.302,2.524-0.631 c4.864-7.037,9.861-17.065,7.333-26.189c-3.824-13.802-7.603-19.918-5.87-30.334c0.113-0.68-0.14-1.37-0.612-1.669 c-0.472-0.299-1.041-0.13-1.374,0.41c-3.223,5.229-7.374,14.495-6.205,26.311C370.485,120.526,373.509,127.447,372.231,136.142z"></path> <path id="XMLID_988_" d="M343.902,186.949c-0.182,1.238,0.279,2.479,1.128,3.039s1.88,0.301,2.524-0.631 c4.865-7.037,9.861-17.065,7.333-26.189c-3.824-13.802-7.603-19.919-5.87-30.335c0.113-0.68-0.14-1.37-0.612-1.669 c-0.472-0.299-1.041-0.13-1.374,0.41c-3.223,5.229-7.374,14.495-6.205,26.311C342.155,171.333,345.179,178.254,343.902,186.949z"></path> <path id="XMLID_991_" d="M424.768,256.165H284.725c-8.685,0-15.727,7.042-15.727,15.727s7.042,15.727,15.726,15.727v164.653 c0,3.323,2.694,6.017,6.017,6.017h128.009c3.323,0,6.017-2.694,6.017-6.017V287.619c8.685,0,15.727-7.042,15.727-15.727 S433.453,256.165,424.768,256.165z"></path> <path id="XMLID_992_" d="M188.553,314.784H138.3l5.285,14.41L121.83,431.925c-2.699,12.745,5.445,25.265,18.191,27.965 c12.746,2.699,25.265-5.447,27.965-18.191l23.162-109.37C192.742,324.8,190.41,319.849,188.553,314.784z"></path> <path id="XMLID_993_" d="M63.945,232.869c0,36.841,0.587,15.227-2.941,99.56l-39.306,95.396 c-4.963,12.046,0.78,25.834,12.824,30.798c12.051,4.963,25.835-0.783,30.798-12.824l40.889-99.242 c1.047-2.544,1.643-5.252,1.758-8.001c3.102-74.138,2.588-51.871,2.588-105.687H63.945L63.945,232.869z"></path> <circle id="XMLID_994_" cx="116.221" cy="40.741" r="40.741"></circle> <path id="XMLID_995_" d="M181.106,236.067l-24.692-1.822c-16.86-1.245-27.491-13.897-29.629-21.263l-4.023-13.873H63.945v19.858 h60.512v74.965c0,3.839,3.112,6.95,6.951,6.95h61.354c2.228,0,4.321-1.068,5.628-2.872s1.67-4.126,0.976-6.243L181.106,236.067z"></path>
+                      </g>
+                    </g>
+                  </svg>
+                {% elif order.status == 'Failed' %}
+                <svg width='3rem' class="pte-2" version="1.1" id="Uploaded to svgrepo.com" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32" xml:space="preserve" fill="#c33332"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <style type="text/css"> .puchipuchi_een{fill:#c33332;} </style> <path class="puchipuchi_een" d="M30.211,23.98L17.798,3.034c-0.81-1.366-2.787-1.366-3.596,0L1.789,23.98 C0.999,25.314,1.96,27,3.51,27h24.98C30.04,27,31.001,25.314,30.211,23.98z M16,24c-1.105,0-2-0.895-2-2c0-1.105,0.895-2,2-2 s2,0.895,2,2C18,23.105,17.105,24,16,24z M18,13.377c0,1.075-0.173,2.143-0.513,3.162l-0.171,0.512C17.127,17.618,16.597,18,16,18 s-1.127-0.382-1.316-0.949l-0.171-0.512C14.173,15.52,14,14.452,14,13.377v-2.99C14,9.621,14.621,9,15.387,9h1.225 C17.379,9,18,9.621,18,10.387V13.377z"></path> </g></svg>
+                {% else %}
+                  <img src="{% static 'assets/images/loading.gif' %}" width="50rem" alt="">
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-5">
+            {% if order.status == 'Completed' %}
+              <div class="float-end text-muted">
+                While You Wait
+                <a href="{% url 'marketplace' %}">
+                  <div class="btn btn-sm btn-danger ms-3 py-1 px-3">
+                    Explore Other Restaurants
+                    <i class="bi bi-arrow-right-circle-fill"></i>
+                  </div>
+                </a>
+              </div>
+            {% elif order.status == 'Failed' %}
+            <div class="float-end text-muted">
+              Try Placing the Order again
+              <a href="{% url 'review_order' %}">
+                <div class="btn btn-sm btn-danger ms-3 py-1 px-3">
+                  Order Again
+                  <i class="bi bi-cart4"></i>
+                </div>
+              </a>
+            </div>
+            {% else %}
+            <div class="float-end text-muted">
+              Refresh Manually
+              <a href="{% url 'check_phonepe_order_status' order.order_id %}">
+                <div class="btn btn-sm btn-danger ms-3 py-1 px-3">
+                  <i class="bi bi-arrow-clockwise"></i>
+                </div>
+              </a>
+            </div>
+            {% endif %}
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <p style="color: #c33332 !important;font-size: 0.7rem;" class="lh-1">
+    {% if order.status == 'Failed' %}
+    * If any amount amount is debited from your account, it will refunded within 3-4 working days.
+    {% elif order.status == 'Pending' or order.status == 'Initiated' %}
+    * We will check for 15 minutes for the status to be completed. After that the payment will be considered Failed.
+    {% endif %}
+    </p>
+  </div>
+{% endblock %}
+
+{% comment %}Right Container SVG{% endcomment %}
+{% block right_container_svg %}
+  <i class="bi bi-list-columns"></i>
+{% endblock %}
+
+{% comment %}Right Container Name{% endcomment %}
+{% block right_container_name %}
+  Transaction Details
+{% endblock %}
+
+{% comment %}Right Container Content{% endcomment %}
+{% block right_container %}
+  <div class="menu-itam-holder pb-4 px-1">
+    <div id="menu-item-list-6272" class="menu-itam-list">
+      <div class="container">
+        {% comment %}STATUS LOGO{% endcomment %}
+        <div class="row">
+          <div class="col col-12" style="justify-content: center;align-items: center;display: flex;">
+            {% if order.status == 'Completed' %}
+              <img src="{% static 'assets/images/paid.png' %}" alt="payment success stamp" width="60%" />
+            {% elif order.status == 'Failed' %}
+              <img src="{% static 'assets/images/failed.jpg' %}" alt="payment failed stamp" width="60%" />
+            {% else %}
+              <img src="{% static 'assets/images/pending.jpg' %}" alt="payment pending stamp" width="60%" />
+            {% endif %}
+          </div>
+        </div>
+
+        {% comment %}Transaction Details{% endcomment %}
+        <div class="row mt-2">
+          <div class="col col-12 col-lg-6">PhonePe Transaction ID:</div>
+          <div class="col col-12 col-lg-6 pe-0">
+            {% if order.transaction_details.data.transactionId %}
+              {{ order.transaction_details.data.transactionId }}
+            {% else %}
+              -
+            {% endif %}
+          </div>
+
+          <div class="col col-12 col-lg-6">Payment Method:</div>
+          <div class="col col-12 col-lg-6 pe-0">
+            {% if order.transaction_details.data.paymentInstrument.type %}
+              {{ order.transaction_details.data.paymentInstrument.type }}
+            {% else %}
+              -
+            {% endif %}
+          </div>
+
+          <div class="col col-12 col-lg-6">PG Transaction ID:</div>
+          <div class="col col-12 col-lg-6 pe-0">
+            {% if order.transaction_details.data.paymentInstrument.pgTransactionId %}
+              {{ order.transaction_details.data.paymentInstrument.pgTransactionId }}
+            {% else %}
+              -
+            {% endif %}
+          </div>
+
+          <div class="col col-12 col-lg-6">PG Service Transaction ID:</div>
+          <div class="col col-12 col-lg-6 pe-0">
+            {% if order.transaction_details.data.paymentInstrument.pgServiceTransactionId %}
+              {{ order.transaction_details.data.paymentInstrument.pgServiceTransactionId }}
+            {% else %}
+              -
+            {% endif %}
+          </div>
+
+          <div class="col col-12 col-lg-6">Paid Amount:</div>
+          <div class="col col-12 col-lg-6 pe-0">
+            {% if not amount == '-' %}
+              ₹{{ amount }}
+            {% else %}
+              -
+            {% endif %}
+          </div>
+
+          <div class="col col-12 col-lg-6">Transaction Status:</div>
+          <div class="col col-12 col-lg-6 pe-0">
+            {% if order.transaction_details.data.responseCode %}
+              {{ order.transaction_details.data.responseCode }}
+            {% else %}
+              -
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

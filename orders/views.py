@@ -2,9 +2,10 @@ import base64
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from Restaurant.utils import get_location
-from marketplace.utils import get_cart_context, get_amounts
+from marketplace.utils import get_cart_context, get_amounts, get_cart_items
 from django.contrib import messages
-from .utils import generate_order_id, get_order_details
+from .models import Order
+from .utils import call_phonepe_order_status_api, generate_order_id
 from .forms import OrderForm
 from accounts.models import UserProfile
 import requests
@@ -12,6 +13,12 @@ from django.conf import settings
 import requests
 from hashlib import sha256
 import json
+from decouple import config
+from marketplace.models import Cart
+
+PHONEPE_MERCHANT_ID = config('PHONEPE_MERCHANT_ID')
+PHONEPE_SALT_KEY = config('PHONEPE_SALT_KEY')
+PHONEPE_SALT_INDEX = config('PHONEPE_SALT_INDEX')
 
 # Create your views here.
 
@@ -26,46 +33,53 @@ def review_order(request):
     if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():
-            obj = form.save(commit=False)
-            obj.username = request.user.username
-            obj.order_details = get_order_details(request)
-            obj.price_details = get_amounts(request)
-            obj.order_id = generate_order_id(request)
-            obj.save()
-            
+            order_obj = form.save(commit=False)
+            order_obj.user = request.user
+            order_obj.price_details = get_amounts(request)
+            order_obj.order_id = generate_order_id(request)
+            order_obj.status = 'Initiated'
+            order_obj.save()
+
+            cart_items = get_cart_items(request)
+            for item in cart_items:
+                item.order = order_obj
+                item.save()
+
             # Phone Pe call
-            salt_key = "099eb0cd-02cf-4e2a-8aca-3e6c6aff0399"
-            salt_index = "1"
             url = "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay"
             headers = {
-                "Content-Type" : "application/json",
+                "Content-Type": "application/json",
             }
 
+            redirect_url = f'http://127.0.0.1:8000/orders/check_phonepe_order_status/{order_obj.order_id}'
+
             payload = {
-                "merchantId": "PGTESTPAYUAT",
-                "merchantTransactionId": str(obj.order_id),
-                "amount": int(float(obj.price_details['total']) * 100),
-                "merchantUserId": str(obj.username),
-                "redirectUrl": 'https://www.google.com',
+                "merchantId": PHONEPE_MERCHANT_ID,
+                "merchantTransactionId": str(order_obj.order_id),
+                "amount": int(float(order_obj.price_details['total']) * 100),
+                "merchantUserId": str(order_obj.user.id),
+                "redirectUrl": redirect_url,
                 "redirectMode": "REDIRECT",
-                "callbackUrl": 'https://www.google.com',
+                "callbackUrl": 'http://127.0.0.1:8000',
                 "paymentInstrument": {"type": "PAY_PAGE"},
             }
 
-            base64_encoded_payload = base64.urlsafe_b64encode(json.dumps(payload).encode()).decode()
-            hash_obj = sha256((base64_encoded_payload + "/pg/v1/pay" + salt_key).encode())
+            base64_encoded_payload = base64.urlsafe_b64encode(
+                json.dumps(payload).encode()).decode()
+            hash_obj = sha256(
+                (base64_encoded_payload + "/pg/v1/pay" + PHONEPE_SALT_KEY).encode())
             final_hash = hash_obj.hexdigest()
-            headers["X-VERIFY"] = final_hash + '###' + salt_index
+            headers["X-VERIFY"] = final_hash + '###' + PHONEPE_SALT_INDEX
 
             parameters = {
                 "request": base64_encoded_payload,
             }
 
             response = requests.post(url, headers=headers, json=parameters)
-            redirect_url = response.json()['data']['instrumentResponse']['redirectInfo']['url']
+            redirect_url = response.json(
+            )['data']['instrumentResponse']['redirectInfo']['url']
 
             return redirect(redirect_url)
-
 
     else:
         profile = UserProfile.objects.get(user=request.user)
@@ -103,5 +117,44 @@ def review_order(request):
 
         form = OrderForm(initial=initial_values)
     context['form'] = form
-    
+
     return render(request, 'orders/review_order.html', context)
+
+
+@login_required(login_url='login')
+def check_phonepe_order_status(request, order_id):
+    try:
+        order = Order.objects.get(order_id=order_id, user=request.user)
+
+    except Order.DoesNotExist:
+        messages.error(request, 'Invalid Order ID!')
+        return redirect('home')
+
+    else:
+        call_phonepe_order_status_api(request, order)
+        return redirect('order_status', order_id)
+
+
+@login_required(login_url='login')
+def order_status(request, order_id):
+    try:
+        order = Order.objects.get(order_id=order_id, user=request.user)
+
+    except Order.DoesNotExist:
+        messages.error(request, 'Invalid Order ID!')
+        return redirect('home')
+
+    else:
+        cart_items = Cart.objects.filter(order=order)
+        context = {
+            'order': order,
+            'cart_items': cart_items,
+        }
+
+        try:
+            amount = format(order.transaction_details['data']['amount'] / 100, ".2f")
+        except:
+            amount = '-'
+
+        context['amount'] = amount
+        return render(request, 'orders/order_status.html', context)

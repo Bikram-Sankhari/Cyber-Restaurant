@@ -10,7 +10,7 @@ class UserManager(UserAdmin):
     list_filter = ()
     fieldsets = ()
     list_display = ('first_name', 'last_name', 'id', 'email',
-                    'username', 'role', 'is_active')
+                    'username', 'role', 'is_active',)
     ordering = ('-date_joined',)
     list_editable = ('is_active',)
 
