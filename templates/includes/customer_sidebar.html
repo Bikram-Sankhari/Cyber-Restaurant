@@ -7,8 +7,8 @@
       </li>
 
        <!-- My Orders  -->
-      <li {% if 'customer/Dashboard' in request.path %}class="active"{% endif %}>
-        <a href="restaurant-restaurant.html"><i class="icon-add_shopping_cart"></i>My Orders</a>
+      <li {% if 'customer/my-orders' in request.path %}class="active"{% endif %}>
+        <a href="{% url 'my_orders' %}"><i class="icon-add_shopping_cart"></i>My Orders</a>
       </li>
 
        <!-- Profile Settings  -->
@@ -17,13 +17,13 @@
       </li>
 
        <!-- Change Password  -->
-      <li {% if 'customer/Dashboard' in request.path %}class="active"{% endif %}>
-        <a href="restaurant-change-password.html"><i class="icon-unlock-alt"></i>Change Password</a>
+      <li {% if 'customer/change-customer-password' in request.path %}class="active"{% endif %}>
+        <a href="{% url 'change_customer_password' %}"><i class="icon-unlock-alt"></i>Change Password</a>
       </li>
 
        {% comment %} Sign Out  {% endcomment %}
-      <li {% if 'customer/Dashboard' in request.path %}class="active"{% endif %}>
-        <a class="logout-btn" href="registration.html"><i class="icon-log-out"></i>Signout</a>
+      <li>
+        <a class="logout-btn" href="{% url 'logout' %}"><i class="icon-log-out"></i>Signout</a>
       </li>
     </ul>
   </div>

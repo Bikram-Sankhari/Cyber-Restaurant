@@ -72,6 +72,11 @@ form button:hover{
     background-color: #a02727!important;
 }
 
+form button:focus{
+    background-color: #a02727!important;
+    box-shadow:0 0 1rem #c33332!important;
+}
+
 #add_category_button:hover{
     color:white;
 }
@@ -92,4 +97,19 @@ form button:hover{
 
 .container-heading{
     text-decoration: underline;
+}
+
+.change-password-input:focus{
+    box-shadow:0 0 0.5rem #c33332!important;
+    border: none!important;
+}
+
+.change-password-input::selection{
+    background: #c33232cd;
+    color: white;
+}
+
+.login-credential::selection{
+    background: #c33232cd;
+    color: white;
 }

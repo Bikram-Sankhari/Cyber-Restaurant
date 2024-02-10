@@ -7,7 +7,7 @@ def get_amounts(request):
     gst = 0
     total = 0
     if request.user.is_authenticated:
-        cart_items = Cart.objects.filter(user=request.user)
+        cart_items = get_cart_items(request)
 
         # Calculate Subtotal
         for cart_item in cart_items:

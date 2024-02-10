@@ -1,0 +1,14 @@
+{% extends 'customer/framework.html' %}
+
+{% block customer_content %}
+  <div class="user-holder">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <div class="row">
+        <div class="element-title has-border right-filters-row mb-1">
+          <h5>My Orders :</h5>
+        </div>
+      </div>
+    </div>
+    {% include 'customer/order_details_table.html' %}
+  </div>
+{% endblock %}

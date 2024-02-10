@@ -1,0 +1,41 @@
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <div class="user-orders-list">
+        <div class="responsive-table">
+          <ul class="table-generic">
+            <li class="order-heading-titles text-center">
+              <div>Order id</div>
+              <div>Time Stamp</div>
+              <div>Total Price</div>
+              <div>Payment Status</div>
+              <div>Delivery Status</div>
+            </li>
+
+            {% for order in orders %}
+            <li class="order-heading-titles">
+              <div>
+                <a href="{% url 'order_status' order.order_id %}" style="color: black;">{{order.order_id}}</a>
+              </div>
+              <div>{{order.created_at}}</div>
+              <div>₹ {{order.price_details.total}}</div>
+              <div>
+                {% if order.status == 'Completed' %}
+                <span class="order-status" style="background-color: #047a06;">Completed</span>
+
+                {% elif order.status == 'Failed' %}
+                <span class="order-status" style="background-color: #c33332;">Failed</span>
+                
+                {% else %}
+                <span class="order-status" style="background-color: #3d77cf;">Pending</span>
+                {% endif %}
+              </div>
+              <div>
+                <span class="order-status" style="background-color: #c33332;">Preparing</span>
+              </div>
+            </li>
+            {% endfor %}
+
+          </ul>
+        </div>
+      </div>
+    </div>

@@ -47,7 +47,7 @@
                   {% elif order.status == 'Failed' %}
                     OOPS !!! Your payment Failed
                   {% else %}
-                  We are working on your Payment
+                    We are working on your Payment
                   {% endif %}
                 </div>
               </div>
@@ -63,9 +63,19 @@
                     </g>
                   </svg>
                 {% elif order.status == 'Failed' %}
-                <svg width='3rem' class="pte-2" version="1.1" id="Uploaded to svgrepo.com" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32" xml:space="preserve" fill="#c33332"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <style type="text/css"> .puchipuchi_een{fill:#c33332;} </style> <path class="puchipuchi_een" d="M30.211,23.98L17.798,3.034c-0.81-1.366-2.787-1.366-3.596,0L1.789,23.98 C0.999,25.314,1.96,27,3.51,27h24.98C30.04,27,31.001,25.314,30.211,23.98z M16,24c-1.105,0-2-0.895-2-2c0-1.105,0.895-2,2-2 s2,0.895,2,2C18,23.105,17.105,24,16,24z M18,13.377c0,1.075-0.173,2.143-0.513,3.162l-0.171,0.512C17.127,17.618,16.597,18,16,18 s-1.127-0.382-1.316-0.949l-0.171-0.512C14.173,15.52,14,14.452,14,13.377v-2.99C14,9.621,14.621,9,15.387,9h1.225 C17.379,9,18,9.621,18,10.387V13.377z"></path> </g></svg>
+                  <svg width="3rem" class="pte-2" version="1.1" id="Uploaded to svgrepo.com" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 32" xml:space="preserve" fill="#c33332">
+                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                    <g id="SVGRepo_iconCarrier">
+                      <style type="text/css">
+                        .puchipuchi_een {
+                          fill: #c33332;
+                        }
+                      </style> <path class="puchipuchi_een" d="M30.211,23.98L17.798,3.034c-0.81-1.366-2.787-1.366-3.596,0L1.789,23.98 C0.999,25.314,1.96,27,3.51,27h24.98C30.04,27,31.001,25.314,30.211,23.98z M16,24c-1.105,0-2-0.895-2-2c0-1.105,0.895-2,2-2 s2,0.895,2,2C18,23.105,17.105,24,16,24z M18,13.377c0,1.075-0.173,2.143-0.513,3.162l-0.171,0.512C17.127,17.618,16.597,18,16,18 s-1.127-0.382-1.316-0.949l-0.171-0.512C14.173,15.52,14,14.452,14,13.377v-2.99C14,9.621,14.621,9,15.387,9h1.225 C17.379,9,18,9.621,18,10.387V13.377z"></path>
+                    </g>
+                  </svg>
                 {% else %}
-                  <img src="{% static 'assets/images/loading.gif' %}" width="50rem" alt="">
+                  <img src="{% static 'assets/images/loading.gif' %}" width="50rem" alt="" />
                 {% endif %}
               </div>
             </div>
@@ -83,36 +93,35 @@
                 </a>
               </div>
             {% elif order.status == 'Failed' %}
-            <div class="float-end text-muted">
-              Try Placing the Order again
-              <a href="{% url 'review_order' %}">
-                <div class="btn btn-sm btn-danger ms-3 py-1 px-3">
-                  Order Again
-                  <i class="bi bi-cart4"></i>
-                </div>
-              </a>
-            </div>
+              <div class="float-end text-muted">
+                Try Placing the Order again
+                <a href="{% url 'review_order' %}">
+                  <div class="btn btn-sm btn-danger ms-3 py-1 px-3">
+                    Order Again
+                    <i class="bi bi-cart4"></i>
+                  </div>
+                </a>
+              </div>
             {% else %}
-            <div class="float-end text-muted">
-              Refresh Manually
-              <a href="{% url 'check_phonepe_order_status' order.order_id %}">
-                <div class="btn btn-sm btn-danger ms-3 py-1 px-3">
-                  <i class="bi bi-arrow-clockwise"></i>
-                </div>
-              </a>
-            </div>
+              <div class="float-end text-muted">
+                Refresh Manually
+                <a href="{% url 'check_phonepe_order_status' order.order_id %}">
+                  <div class="btn btn-sm btn-danger ms-3 py-1 px-3">
+                    <i class="bi bi-arrow-clockwise"></i>
+                  </div>
+                </a>
+              </div>
             {% endif %}
-
           </div>
         </div>
       </div>
     </div>
     <p style="color: #c33332 !important;font-size: 0.7rem;" class="lh-1">
-    {% if order.status == 'Failed' %}
-    * If any amount amount is debited from your account, it will refunded within 3-4 working days.
-    {% elif order.status == 'Pending' or order.status == 'Initiated' %}
-    * We will check for 15 minutes for the status to be completed. After that the payment will be considered Failed.
-    {% endif %}
+      {% if order.status == 'Failed' %}
+        * If any amount amount is debited from your account, it will refunded within 3-4 working days.
+      {% elif order.status == 'Pending' or order.status == 'Initiated' %}
+        * We will check for 15 minutes for the status to be completed. After that the payment will be considered Failed.
+      {% endif %}
     </p>
   </div>
 {% endblock %}

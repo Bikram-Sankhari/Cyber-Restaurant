@@ -22,6 +22,12 @@
                   <p>{{ user_profile.phone_number }}</p>
                 </div>
               {% endif %}
+              {% if user_profile.phone_number %}
+                <div class="text">
+                  <i class="bi bi-envelope-open"></i>
+                  <p>{{ request.user.email }}</p>
+                </div>
+              {% endif %}
             </div>
           </div>
         </div>

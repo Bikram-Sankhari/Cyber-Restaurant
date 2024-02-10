@@ -7,11 +7,13 @@ class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput(
         attrs={
             'placeholder': '******************',
+            'class': 'login-credential',
         }
     ))
     confirm_password = forms.CharField(widget=forms.PasswordInput(
         attrs={
             'placeholder': '******************',
+            'class': 'login-credential',
         }
     ))
 
@@ -20,10 +22,10 @@ class UserForm(forms.ModelForm):
         fields = ['first_name', 'last_name', 'username',
                   'email', 'password']
         widgets = {
-            'first_name': forms.TextInput(attrs={'placeholder': 'Your First Name e.g. - John'}),
-            'last_name': forms.TextInput(attrs={'placeholder': 'Your Last Name e.g. - Doe'}),
-            'username': forms.TextInput(attrs={'placeholder': 'An Unique Username e.g. - johndoe@1997'}),
-            'email': forms.EmailInput(attrs={'placeholder': 'Your Business Email e.g. - johndoe1997@email.com'}),
+            'first_name': forms.TextInput(attrs={'placeholder': 'Your First Name e.g. - John', 'class': 'login-credential',}),
+            'last_name': forms.TextInput(attrs={'placeholder': 'Your Last Name e.g. - Doe','class': 'login-credential',}),
+            'username': forms.TextInput(attrs={'placeholder': 'An Unique Username e.g. - johndoe@1997','class': 'login-credential',}),
+            'email': forms.EmailInput(attrs={'placeholder': 'Your Business Email e.g. - johndoe1997@email.com','class': 'login-credential',}),
         }
 
     def clean(self):

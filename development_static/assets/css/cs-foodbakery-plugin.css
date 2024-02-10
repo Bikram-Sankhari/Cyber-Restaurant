@@ -1549,7 +1549,7 @@ span.sticky-stop { position: relative; top: -49px; }
 .table-generic > li { display: table-row; }
 .table-generic > li > div { display: table-cell; padding: 18px 15px; text-transform: capitalize; border-top: 1px solid #eee; color: #484848; vertical-align: middle; line-height: normal; }
 .table-generic > li > div a i { font-size: 20px; }
-.table-generic > li:first-child > div { padding: 14px 15px; color: #333; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; }
+.table-generic > li:first-child > div { padding: 14px 15px; color: #333; font-size: 11px; text-transform: uppercase; font-weight: 700; }
 #team-list-table .panel-heading li { margin-bottom: 0; }
 #team-list-table .table-generic > li:first-child > div > span { line-height: 15px; color: #333; letter-spacing: 2px; font-weight: 700; font-size: 11px; font-family: 'Open sans', sans-serif; text-transform: uppercase; }
 .table-generic > li:nth-child(odd) > div { background-color: #fafafa; }

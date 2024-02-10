@@ -2,20 +2,44 @@ from django.shortcuts import redirect, render
 from accounts.utils import validate_customer
 from django.contrib.auth.decorators import user_passes_test, login_required
 from .utils import get_user_profile
-from .forms import CustomerUserForm
+from .forms import CustomerUserForm, ChangePasswordForm
 from accounts.forms import UserProfileForm
 from accounts.models import UserProfile
 from django.contrib import messages
+from orders.models import Order
+from orders.utils import get_orders
+from django.contrib import auth
 
-# Create your views here.
 
-
+# Dashhoard
 @login_required(login_url='login')
 @user_passes_test(validate_customer)
 def customer_dashboard(request):
-    return render(request, 'customer/dashboard.html')
+    orders = get_orders(request)
+    recent_orders = orders[:5]
+
+    context = {
+        'order_count': orders.count(),
+        'orders': recent_orders,
+    }
+
+    return render(request, 'customer/dashboard.html', context)
 
 
+# My Orders
+@login_required(login_url='login')
+@user_passes_test(validate_customer)
+def my_orders(request):
+    orders = get_orders(request)
+
+    context = {
+        'orders': orders,
+    }
+
+    return render(request, 'customer/my_orders.html', context)
+
+
+# Profile Settings
 @login_required(login_url='login')
 @user_passes_test(validate_customer)
 def customer_profile(request):
@@ -43,3 +67,32 @@ def customer_profile(request):
     }
 
     return render(request, 'customer/profile.html', context)
+
+
+# Change Password
+@login_required(login_url='login')
+@user_passes_test(validate_customer)
+def change_customer_password(request):
+    if request.method == 'POST':
+        form = ChangePasswordForm(request.POST)
+        user = auth.authenticate(username=request.user.username, password=request.POST['old_password'])
+
+        if user:
+            if form.is_valid():
+                request.user.set_password(form.cleaned_data['new_password'])
+                request.user.save()
+                auth.logout(request)
+                messages.success(request, 'Password changed successfully')
+                return redirect('login')
+            
+        else:
+            messages.error(request, 'Invalid Current Password')
+            return redirect('change_customer_password')
+    else:
+        form = ChangePasswordForm()
+
+    context = {
+        'form': form,
+    }
+    print(form.errors)
+    return render(request, 'customer/change_customer_password.html', context)

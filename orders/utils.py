@@ -60,3 +60,7 @@ def call_phonepe_order_status_api(request, order):
         for item in food_items_in_order:
             item.order_status = 'Payment Pending'
             item.save()    
+
+def get_orders(request):
+    orders = Order.objects.filter(user=request.user).order_by('-updated_at')
+    return orders

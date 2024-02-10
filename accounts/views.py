@@ -244,10 +244,3 @@ def reset_password(request):
 
     else:
         return render(request, 'accounts/reset_password.html')
-
-@login_required(login_url='login')
-@user_passes_test(validate_vendor)
-def not_customer(request):
-    messages.info(request, "You are a Vendor and not Authorised to view this Page")
-    print('here')
-    return redirect('my_account')
