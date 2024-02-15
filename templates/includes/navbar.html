@@ -36,7 +36,7 @@
               <a href="{% url 'marketplace' %}" class="btn btn-outline-danger me-2 my-2 btn-sm">Marketplace</a>
               {% if user.is_authenticated %}
                 <a class="btn btn-outline-danger btn-sm me-2 my-2" data-target="" data-toggle="modal" href="{% url 'my_account' %}">My Account</a>
-                <a class="btn btn-danger py-1 my-2" style="--bs-btn-bg:#c33332;" href="{% url 'logout' %}">Logout</a>
+                <a class="btn btn-danger py-1 my-2 logout" style="--bs-btn-bg:#c33332;" href="{% url 'logout' %}">Logout</a>
               {% else %}
               <div class="btn btn-outline-danger btn-sm my-2">
                 <a data-target="" style="color: unset;" data-toggle="modal" href="{% url 'login' %}">Login /</a>

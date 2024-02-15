@@ -24,6 +24,7 @@ def home(request):
            vendor.distance = round(vendor.distance.km, 2)
     else:
         vendors = Vendor.objects.filter(is_approved=True, user__is_active=True)[:8]
+        print(vendors)
     context = {
         'vendors': vendors,
     }

@@ -54,6 +54,7 @@ def call_phonepe_order_status_api(request, order):
     if order.status == 'Completed':
         for item in food_items_in_order:
             item.order_status = 'Ordered'
+            item.delivery_status = 'Preparing'
             item.save()
 
     elif order.status == 'Pending':

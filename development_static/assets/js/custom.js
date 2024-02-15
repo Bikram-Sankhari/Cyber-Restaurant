@@ -711,6 +711,13 @@ $(document).ready(function () {
         message = "You are about to delete " + $(this).attr('data-category') + " category"
         confirm_deletion(url, message)
     })
+
+    $('.logout').on('click', function (e) {
+        e.preventDefault;
+        url = $(this).attr('href');
+        sessionStorage.clear();
+        window.location = url;
+    })
 })
 
 
@@ -728,7 +735,7 @@ function success(position) {
     }
     catch (err) { }
     var url = "https://maps.google.com/maps/api/geocode/json?latlng=" + latitude + "," + longitude + "&key=" + google_api_key;
-    var home_url = $("#home").attr('href') + "location_accessed";
+    var location_accessed_url = $("#home").attr('href') + "location_accessed";
 
     $.ajax({
         type: 'GET',
@@ -738,7 +745,7 @@ function success(position) {
                 var address = response.results[0].formatted_address;
                 document.getElementById('current-location').value = address;
                 sessionStorage.setItem('current_location', address);
-                window.location = home_url + "?longitude=" + longitude + "&latitude=" + latitude + "&current_url=" + window.location.href;
+                window.location = location_accessed_url + "?longitude=" + longitude + "&latitude=" + latitude + "&current_url=" + window.location.href;
             }
             else {
                 error(response);

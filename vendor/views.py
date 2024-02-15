@@ -5,17 +5,56 @@ from django.contrib.auth.decorators import user_passes_test, login_required
 from accounts.forms import UserProfileForm
 from accounts.models import UserProfile
 from accounts.views import validate_vendor
+from marketplace.models import Cart
+from marketplace.utils import GST_PERCENTAGE
 from menu.models import Category, FoodItem
 from .models import OpeningHours, Vendor
 from .forms import VendorForm, OpeningHoursForm
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
 from menu.forms import CategoryForm, FoodItemForm
-from .utils import get_vendor
+from .utils import get_vendor, get_all_orders
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.template.defaultfilters import slugify
 from django.middleware.csrf import get_token
-# Create your views here.
+from orders.models import Order
+from django.db.models import Q, Prefetch
+
+
+@login_required(login_url='login')
+@user_passes_test(validate_vendor)
+def vendor_dashboard(request):
+    all_orders = get_all_orders(request)
+    pending_orders = all_orders.filter(
+        Q(cart_item__delivery_status='Preparing') | Q(cart_item__delivery_status='On The Way')).prefetch_related(
+            Prefetch(
+                'cart_item',
+                queryset=Cart.objects.filter(
+                    Q(food_item__vendor=get_vendor(request)),
+                    Q(delivery_status='Preparing') | Q(delivery_status='On The Way')
+                )
+            )
+    )
+
+    context = {}
+
+#   Review --------------------------------------
+    for order in pending_orders:
+        subtotal = 0
+        for item in order.cart_item.all():
+            subtotal += item.food_item.price * item.quantity
+        
+        tax = subtotal * GST_PERCENTAGE / 100
+        total = subtotal + tax
+
+        context[order.order_id] = total
+        
+
+    context['all_orders_count'] = all_orders.count()
+    context['pending_orders'] = pending_orders
+#   Upto Here -------------------------------------------
+    
+    return render(request, 'vendor/vendor_dashboard.html', context)
 
 
 @login_required(login_url='login')
@@ -57,6 +96,7 @@ def vendor_profile(request):
         }
         return render(request, 'vendor/vendor_profile.html', context)
 
+
 @login_required(login_url='login')
 @user_passes_test(validate_vendor)
 def menu_builder(request):
@@ -73,7 +113,8 @@ def menu_builder(request):
 def fooditems_by_category(request, pk=None):
     vendor = get_vendor(request)
     category = get_object_or_404(Category, pk=pk)
-    fooditems = FoodItem.objects.filter(vendor=vendor, category=category).order_by('created_at')
+    fooditems = FoodItem.objects.filter(
+        vendor=vendor, category=category).order_by('created_at')
     context = {
         'fooditems': fooditems,
         'category': category,
@@ -96,7 +137,8 @@ def add_category(request):
             except IntegrityError:
                 messages.info(request, 'A similar Category already exists')
             else:
-                messages.success(request, f'Category - \"{category_name.upper()}\" added successfully')
+                messages.success(
+                    request, f'Category - \"{category_name.upper()}\" added successfully')
             return redirect('menu_builder')
         else:
             for field in form:
@@ -127,7 +169,7 @@ def edit_category(request, pk=None):
     if category.vendor != get_vendor(request):
         messages.error(request, 'You are not allowed to edit this category')
         return redirect('menu_builder')
-    
+
     if request.method == 'POST':
         form = CategoryForm(request.POST, instance=category)
         if form.is_valid():
@@ -175,10 +217,11 @@ def add_food(request):
             else:
                 messages.success(request, 'Food Item added successfully')
             return redirect('fooditems_by_category', food.category.pk)
- 
+
     else:
         form = FoodItemForm()
-        form.fields['category'].queryset = Category.objects.filter(vendor=get_vendor(request))
+        form.fields['category'].queryset = Category.objects.filter(
+            vendor=get_vendor(request))
     context = {
         'form': form,
     }
@@ -192,7 +235,7 @@ def edit_food(request, pk=None):
     if food.vendor != get_vendor(request):
         messages.error(request, 'You are not allowed to edit this food item')
         return redirect('menu_builder')
-    
+
     if request.method == 'POST':
         form = FoodItemForm(request.POST, request.FILES, instance=food)
         if form.is_valid():
@@ -214,7 +257,8 @@ def edit_food(request, pk=None):
                     messages.error(request, error)
     else:
         form = FoodItemForm(instance=food)
-        form.fields['category'].queryset = Category.objects.filter(vendor=get_vendor(request))
+        form.fields['category'].queryset = Category.objects.filter(
+            vendor=get_vendor(request))
     context = {
         'form': form,
         'food': food,
@@ -229,18 +273,20 @@ def delete_food(request, pk=None):
     if food.vendor != get_vendor(request):
         messages.error(request, 'You are not allowed to delete this food item')
         return redirect('menu_builder')
-    
+
     pk = food.category.pk
     food.delete()
     messages.success(request, 'Food Item deleted successfully')
     return redirect('fooditems_by_category', pk)
+
 
 @login_required(login_url='login')
 @user_passes_test(validate_vendor)
 def opening_hours(request):
     vendor = get_vendor(request)
     form = OpeningHoursForm()
-    opening_hours = OpeningHours.objects.filter(vendor=vendor).order_by('day', 'open')
+    opening_hours = OpeningHours.objects.filter(
+        vendor=vendor).order_by('day', 'open')
     context = {
         'opening_hours': opening_hours,
         'form': form,
@@ -261,7 +307,8 @@ def add_opening_hours(request):
             else:
                 is_closed = False
             try:
-                obj = OpeningHours.objects.create(vendor=get_vendor(request), day=day, open=open, close=close, is_closed=is_closed)
+                obj = OpeningHours.objects.create(vendor=get_vendor(
+                    request), day=day, open=open, close=close, is_closed=is_closed)
             except ValidationError as e:
                 for error in e:
                     if '500' in error[1]:

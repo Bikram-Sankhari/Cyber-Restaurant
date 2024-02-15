@@ -158,3 +158,4 @@ def order_status(request, order_id):
 
         context['amount'] = amount
         return render(request, 'orders/order_status.html', context)
+    

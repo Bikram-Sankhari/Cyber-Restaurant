@@ -1,0 +1,72 @@
+{% extends 'customer/framework.html' %}
+{% load static %}
+
+{% block customer_content %}
+  <div class="user-holder">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <div class="row">
+        <div class="element-title has-border right-filters-row mb-1">
+          <h5>Delivery Status</h5>
+          <h5 class="float-end">Order ID : <span class="px-4" style="color:#c33332">{{order.order_id}}</span></h5>
+        </div>
+      </div>
+    </div>
+    <hr class="mb-4">
+    <div class="row">
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="user-orders-list">
+          <div class="responsive-table">
+            <ul class="table-generic">
+              <li class="order-heading-titles text-center">
+                <div></div>
+                <div>Order &nbsp×&nbsp Quantity</div>
+                <div>From</div>
+                <div>Delivery Status</div>
+                <div>Estimated Time</div>
+              </li>
+
+              {% for item in cart_items %}
+                <li class="order-heading-titles">
+                  <div class="image-holder col col-lg-3 px-0 mb-0 ms-2 align-items-center d-flex">
+                    <a href="{{ item.food_item.image.url }}"><img width="60rem" src="{{ item.food_item.image.url }}" alt="" /></a>
+                  </div>
+
+                  <div>
+                    <span class="price px-3">{{ item.food_item.food_title }} × {{ item.quantity }}</span>
+                  </div>
+
+                  <div>
+                    <span class="price px-3">{{ item.food_item.vendor }}</span>
+                  </div>
+                  <div>
+                    {% if item.delivery_status == 'Delivered' or item.delivery_status == 'On The Way' %}
+                      <span class="order-status" style="background-color: #047a06;">{{item.delivery_status}}</span>
+
+                    {% elif item.delivery_status == 'Preparing' %}
+                      <span class="order-status" style="background-color: #c33332;">Preparing</span>
+
+                    {% else %}
+                      <span class="order-status" style="background-color: #3d77cf;">Unconfirmed</span>
+                    {% endif %}
+                  </div>
+
+                  <div>
+                    {% if item.delivery_status == 'Delivered' %}
+                      <span class="order-status text-muted">00:00</span>
+
+                    {% elif item.delivery_status == 'Unconfirmed' %}
+                    <span class="order-status text-muted"> Waiting for Confirmation</span>
+
+                    {% else %}
+                    <span class="order-status text-muted"> < 5 minutes</span>
+                    {% endif %}
+                  </div>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

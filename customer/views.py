@@ -1,6 +1,7 @@
 from django.shortcuts import redirect, render
 from accounts.utils import validate_customer
 from django.contrib.auth.decorators import user_passes_test, login_required
+from marketplace.models import Cart
 from .utils import get_user_profile
 from .forms import CustomerUserForm, ChangePasswordForm
 from accounts.forms import UserProfileForm
@@ -39,6 +40,26 @@ def my_orders(request):
     return render(request, 'customer/my_orders.html', context)
 
 
+# Delivery Status
+@login_required(login_url='login')
+def delivery_status(request, order_id):
+    try:
+        order = Order.objects.get(order_id=order_id, user=request.user)
+
+    except Order.DoesNotExist:
+        messages.error(request, 'Invalid Order ID!')
+        return redirect('my_orders')
+
+    else:
+        cart_items = Cart.objects.filter(order=order)
+        context = {
+            'order': order,
+            'cart_items': cart_items,
+        }
+
+        return render(request, 'customer/delivery_status.html', context)
+
+
 # Profile Settings
 @login_required(login_url='login')
 @user_passes_test(validate_customer)
@@ -51,9 +72,15 @@ def customer_profile(request):
         if user_form.is_valid() and profile_form.is_valid():
             # Check for username changing attempt
             if user_form.cleaned_data['username'] != username:
-                user_form.cleaned_data['username'] = username
+                user = user_form.save(commit=False)
+                user.username = username
+                user.save()
+                user_form = CustomerUserForm(instance=user)
                 messages.info(request, 'Username cannot be changed')
-            user_form.save()
+
+            else:
+                user_form.save()
+
             profile_form.save()
         
             messages.success(request, 'Profile updated successfully')

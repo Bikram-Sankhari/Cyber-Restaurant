@@ -11,6 +11,7 @@ from .utils import logged_in_redirect, send_verification_email, send_password_re
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.template.defaultfilters import slugify
 
+
 # Create your views here.
 def register_user(request):
     if request.user.is_authenticated:
@@ -142,15 +143,16 @@ def login(request):
 
 @login_required(login_url='login')
 def logout(request):
+    try:
+        del(request.session['latitude'])
+        del(request.session['longitude'])
+        del(request.session['current_url'])
+    except KeyError:
+        pass
     auth.logout(request)
     messages.info(request, "You have been successfully logged out")
     return redirect('login')
 
-
-@login_required(login_url='login')
-@user_passes_test(validate_vendor)
-def vendor_dashboard(request):
-    return render(request, 'accounts/vendor_dashboard.html')
 
 @login_required(login_url='login')
 def my_account(request):

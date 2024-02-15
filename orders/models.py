@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.serializers.json import DjangoJSONEncoder
 from accounts.models import User
+from marketplace.models import Cart
 # Create your models here.
 
 STATUS_CHOICES = (
@@ -31,3 +32,11 @@ class Order(models.Model):
 
     def __str__(self) -> str:
         return f'{self.delivery_first_name} {self.delivery_last_name} - Order ID: {self.order_id}'
+
+    def is_fully_delivered(self):
+        cart_items = Cart.objects.filter(order=self)
+        for item in cart_items:
+            if item.delivery_status != 'Delivered':
+                return False
+        
+        return True

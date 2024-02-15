@@ -24,8 +24,8 @@
                   <div class="image-holder col col-lg-3 px-0 mb-0 ms-2 align-items-center d-flex">
                     <a href="{{ item.food_item.image.url }}"><img src="{{ item.food_item.image.url }}" alt="" /></a>
                   </div>
-                  <div class="text-holder ms-3 col col-lg-3 align-items-center d-flex">
-                    <h6 style="font-size:0.9rem;font: Normal 'Open Sans', sans-serif;">{{ item.food_item.food_title }} × {{ item.quantity }}</h6>
+                  <div class="text-holder ms-3 col col-lg-3 align-items-center d-flex text-center">
+                    <h6 style="font-size:0.9rem;font: Normal 'Open Sans', sans-serif;">{{ item.food_item.food_title }} × {{ item.quantity }} <br> <span class="text-muted">({{item.food_item.vendor}})</span></h6>
                   </div>
                   <div class="col col-lg-3 align-items-center d-flex">
                     <span class="price px-3">₹{{ item.food_item.price }} × {{ item.quantity }}</span>
