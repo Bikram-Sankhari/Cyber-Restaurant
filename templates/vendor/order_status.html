@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+  <div class="main-section">
+    {% include 'includes/vendor_cover.html' %}
+    <div class="page-section account-header buyer-logged-in">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+            {% include 'includes/vendor_sidebar.html' %}
+          </div>
+          <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+            <div class="user-dashboard loader-holder">
+              <div class="user-holder">
+                <div class="user-holder">
+                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="row">
+                      <div class="element-title has-border right-filters-row mb-1">
+                        <h5>Order Details</h5>
+                        <h5 class="float-end">Order ID : <span class="px-4" style="color:#c33332">{{ order.order_id }}</span></h5>
+                      </div>
+                      <hr />
+                      <br />
+                      {% comment %}Delvery Details{% endcomment %}
+                      <div class="element-title has-border right-filters-row mb-1 container">
+                        {% comment %}Delivery Address{% endcomment %}
+                        <div class="row">
+                          <div class="col col-12 col-lg-3">
+                            <span class="fw-semibold">Delivery Address :</span>
+                          </div>
+
+                          <div class="col col-12 col-lg-9">
+                            <span class="pe-4 text-muted">{{ order.delivery_address }}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {% comment %}Time Stamp{% endcomment %}
+                      <div class="row">
+                        <div class="col col-12 col-lg-3">
+                          <span class="fw-semibold">Time Stamp :</span>
+                        </div>
+
+                        <div class="col col-12 col-lg-9">
+                          <span class="pe-4 text-muted">{{ order.updated_at }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <hr class="mb-4" />
+                <div class="row">
+                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="user-orders-list">
+                      <div class="responsive-table">
+                        <ul class="table-generic">
+                          <li class="order-heading-titles text-center">
+                            <div></div>
+                            <div>Order</div>
+                            <div>Quantity</div>
+                            <div>Value</div>
+                            <div>Delivery Status</div>
+                            <div>Send out for Delivery</div>
+                          </li>
+
+                          {% for item in cart_items %}
+                            <li class="order-heading-titles">
+                              {% comment %}Order Image{% endcomment %}
+                              <div class="image-holder col col-lg-3 px-0 mb-0 ms-2 align-items-center d-flex">
+                                <a href="{{ item.food_item.image.url }}"><img width="60rem" src="{{ item.food_item.image.url }}" alt="" /></a>
+                              </div>
+
+                              {% comment %}Order{% endcomment %}
+                              <div>
+                                <span class="price px-3">{{ item.food_item.food_title }}</span>
+                              </div>
+
+                              {% comment %}Quantity{% endcomment %}
+                              <div>
+                                <span class="price px-3">{{ item.quantity }}</span>
+                              </div>
+
+                              {% comment %}Value{% endcomment %}
+                              <div>
+                                <span class="price px-3">₹ {{ item.total_price }}</span>
+                              </div>
+
+                              {% comment %}Delivery Status{% endcomment %}
+                              <div>
+                                {% if item.delivery_status == 'Delivered' or item.delivery_status == 'On The Way' %}
+                                  <span class="order-status" style="background-color: #047a06;">{{ item.delivery_status }}</span>
+                                {% else %}
+                                  <span class="order-status" style="background-color: #c33332;">Preparing</span>
+                                {% endif %}
+                              </div>
+
+                              {% comment %}Send Out {% endcomment %}
+                              <div>
+                                {% if item.delivery_status == 'Preparing' %}
+                                  <a href="{% url 'send_out_for_delivery' item.id %}" style="color:#c33332"><i class="bi bi-bicycle"></i></a>
+                                {% endif %}
+                              </div>
+                            </li>
+                          {% endfor %}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

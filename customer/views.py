@@ -5,12 +5,13 @@ from marketplace.models import Cart
 from .utils import get_user_profile
 from .forms import CustomerUserForm, ChangePasswordForm
 from accounts.forms import UserProfileForm
-from accounts.models import UserProfile
 from django.contrib import messages
 from orders.models import Order
 from orders.utils import get_orders
 from django.contrib import auth
+from vendor.utils import paginate
 
+ORDERS_PER_PAGE = 5
 
 # Dashhoard
 @login_required(login_url='login')
@@ -32,9 +33,10 @@ def customer_dashboard(request):
 @user_passes_test(validate_customer)
 def my_orders(request):
     orders = get_orders(request)
+    page_obj = paginate(request, orders, ORDERS_PER_PAGE)
 
     context = {
-        'orders': orders,
+        'orders': page_obj,
     }
 
     return render(request, 'customer/my_orders.html', context)

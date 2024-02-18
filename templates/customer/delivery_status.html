@@ -7,11 +7,11 @@
       <div class="row">
         <div class="element-title has-border right-filters-row mb-1">
           <h5>Delivery Status</h5>
-          <h5 class="float-end">Order ID : <span class="px-4" style="color:#c33332">{{order.order_id}}</span></h5>
+          <h5 class="float-end">Order ID : <span class="px-4" style="color:#c33332">{{ order.order_id }}</span></h5>
         </div>
       </div>
     </div>
-    <hr class="mb-4">
+    <hr class="mb-4" />
     <div class="row">
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class="user-orders-list">
@@ -40,11 +40,9 @@
                   </div>
                   <div>
                     {% if item.delivery_status == 'Delivered' or item.delivery_status == 'On The Way' %}
-                      <span class="order-status" style="background-color: #047a06;">{{item.delivery_status}}</span>
-
+                      <span class="order-status" style="background-color: #047a06;">{{ item.delivery_status }}</span>
                     {% elif item.delivery_status == 'Preparing' %}
                       <span class="order-status" style="background-color: #c33332;">Preparing</span>
-
                     {% else %}
                       <span class="order-status" style="background-color: #3d77cf;">Unconfirmed</span>
                     {% endif %}
@@ -53,12 +51,10 @@
                   <div>
                     {% if item.delivery_status == 'Delivered' %}
                       <span class="order-status text-muted">00:00</span>
-
                     {% elif item.delivery_status == 'Unconfirmed' %}
-                    <span class="order-status text-muted"> Waiting for Confirmation</span>
-
+                      <span class="order-status text-muted">Waiting for Confirmation</span>
                     {% else %}
-                    <span class="order-status text-muted"> < 5 minutes</span>
+                      <span class="order-status text-muted">< 5 minutes</span>
                     {% endif %}
                   </div>
                 </li>

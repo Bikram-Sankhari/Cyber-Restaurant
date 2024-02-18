@@ -6,54 +6,58 @@ from accounts.forms import UserProfileForm
 from accounts.models import UserProfile
 from accounts.views import validate_vendor
 from marketplace.models import Cart
-from marketplace.utils import GST_PERCENTAGE
 from menu.models import Category, FoodItem
 from .models import OpeningHours, Vendor
 from .forms import VendorForm, OpeningHoursForm
-from django.contrib import messages
+from django.contrib import messages, auth
 from django.shortcuts import get_object_or_404
 from menu.forms import CategoryForm, FoodItemForm
-from .utils import get_vendor, get_all_orders
+from .utils import get_vendor, get_all_orders_for_vendor, paginate
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.template.defaultfilters import slugify
 from django.middleware.csrf import get_token
 from orders.models import Order
-from django.db.models import Q, Prefetch
+from django.db.models import Q
+from django.conf import settings
+from datetime import datetime
+from customer.forms import ChangePasswordForm
 
+ORDERS_PER_PAGE = 5
 
 @login_required(login_url='login')
 @user_passes_test(validate_vendor)
 def vendor_dashboard(request):
-    all_orders = get_all_orders(request)
-    pending_orders = all_orders.filter(
-        Q(cart_item__delivery_status='Preparing') | Q(cart_item__delivery_status='On The Way')).prefetch_related(
-            Prefetch(
-                'cart_item',
-                queryset=Cart.objects.filter(
-                    Q(food_item__vendor=get_vendor(request)),
-                    Q(delivery_status='Preparing') | Q(delivery_status='On The Way')
-                )
-            )
-    )
-
-    context = {}
-
-#   Review --------------------------------------
-    for order in pending_orders:
-        subtotal = 0
-        for item in order.cart_item.all():
-            subtotal += item.food_item.price * item.quantity
-        
-        tax = subtotal * GST_PERCENTAGE / 100
-        total = subtotal + tax
-
-        context[order.order_id] = total
-        
-
-    context['all_orders_count'] = all_orders.count()
-    context['pending_orders'] = pending_orders
-#   Upto Here -------------------------------------------
+    all_orders = get_all_orders_for_vendor(request)
+    pending_orders = all_orders.filter(Q(cart_item__delivery_status='Preparing') |
+                                       Q(cart_item__delivery_status='On The Way'))
     
+    # Calculate Total Revenue
+    subtotal = 0
+    for order in all_orders:
+        subtotal += order.get_vendor_price_details()['total']
+
+    total_revenue = subtotal * (100 - settings.REVENUE_CHARGE_PERCENTAGE) / 100
+
+    # Calculate Revenue this Month
+    subtotal_this_month = 0
+    orders_this_month = all_orders.filter(updated_at__month=datetime.now().month)
+
+    for order in orders_this_month:
+        subtotal_this_month += order.get_vendor_price_details()['total']
+
+    revenue_this_month = subtotal_this_month * (100 - settings.REVENUE_CHARGE_PERCENTAGE) / 100
+
+    # Paginate Pending Orders
+    page_obj = paginate(request, pending_orders, ORDERS_PER_PAGE)
+
+    context = {
+        'all_orders_count': all_orders.count(),
+        'orders': page_obj,
+        'orders_count': pending_orders.count(),
+        'total_revenue': total_revenue,
+        'revenue_this_month': revenue_this_month,
+    }
+
     return render(request, 'vendor/vendor_dashboard.html', context)
 
 
@@ -354,3 +358,80 @@ def remove_opening_hours(request, pk):
             return JsonResponse({'status': 'Failed', 'message': 'Invalid Request', 'code': 408})
     else:
         return JsonResponse({'status': 'Failed', 'message': 'Please Login to Your Account', 'code': 400})
+
+
+@login_required(login_url='login')
+@user_passes_test(validate_vendor)
+def orders(request):
+    all_orders = get_all_orders_for_vendor(request)
+    page_obj = paginate(request, all_orders, ORDERS_PER_PAGE)
+
+    context = {
+        'orders': page_obj,
+    }
+
+    return render(request, 'vendor/orders.html', context)
+
+
+@login_required(login_url='login')
+@user_passes_test(validate_vendor)
+def order_status(request, order_id):
+    order = Order.objects.get(order_id=order_id)
+    cart_items = order.get_cart_items_by_vendor()
+
+    context = {
+        'order': order,
+        'cart_items': cart_items,
+    }
+
+    return render(request, 'vendor/order_status.html', context)
+
+
+@login_required(login_url='login')
+@user_passes_test(validate_vendor)
+def send_out_for_delivery(request, id):
+    try:
+        order = Order.objects.get(order_id=id)
+    except Order.DoesNotExist:
+        try:
+            item = Cart.objects.get(pk=id)
+        except Cart.DoesNotExist:
+            messages.error(request, 'Invalid ID')
+        else:
+            # If sending an Item
+            item.delivery_status = 'On The Way'
+            item.save()
+            messages.success(request, 'Item sent out for delivery')
+
+    else:
+        items = order.get_cart_items_by_vendor()
+        for item in items:
+            item.delivery_status = 'On The Way'
+            item.save()
+        messages.success(request, 'Order sent out for delivery')
+
+    return redirect('vendor_orders')
+
+
+# Change Password
+def change_password(request):
+    if request.method == 'POST':
+        form = ChangePasswordForm(request.POST)
+        user = auth.authenticate(username=request.user.username, password=request.POST['old_password'])
+
+        if user:
+            if form.is_valid():
+                request.user.set_password(form.cleaned_data['new_password'])
+                request.user.save()
+                auth.logout(request)
+                messages.success(request, 'Password changed successfully')
+                return redirect('login')
+        else:
+            messages.error(request, 'Invalid Current Password')
+            return redirect('change_vendor_password')
+    else:
+        form = ChangePasswordForm()
+    context = {
+        'form': form,
+    }
+    return render(request, 'vendor/change_password.html', context)

@@ -57,6 +57,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'orders.middleware.SimpleMiddleware',
 ]
 
 ROOT_URLCONF = 'Restaurant.urls'
@@ -165,6 +166,8 @@ EMAIL_HOST_PASSWORD = config('EMAIL_PASSWORD')
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL= config('DEFAULT_FROM_EMAIL')
 GOOGLE_API_KEY = config('GOOGLE_API_KEY')
+
+REVENUE_CHARGE_PERCENTAGE= 10
 
 
 # GIS Configuration

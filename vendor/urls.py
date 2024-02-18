@@ -22,4 +22,12 @@ urlpatterns = [
     # Opening Hours CRUD URLs
     path('opening-hours/add', views.add_opening_hours, name='add_opening_hours'),
     path('opening-hours/remove/<int:pk>/', views.remove_opening_hours, name='remove_opening_hours'),
+
+    # Orders URLs
+    path('orders/', views.orders, name='vendor_orders'),
+    path('orders/status/<str:order_id>', views.order_status, name='vendor_order_status'),
+    path('send-out-for-delivery/<str:id>', views.send_out_for_delivery, name='send_out_for_delivery'),
+
+    # Change Password
+    path('change-password/', views.change_password, name='change_vendor_password'),
 ]

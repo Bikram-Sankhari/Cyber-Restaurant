@@ -15,7 +15,7 @@ class CustomerUserForm(forms.ModelForm):
 class ChangePasswordForm(forms.Form):
     input_field_attrs = {'class': "form-control form-control-sm change-password-input ps-2 pe-0", 'style': "border: solid 1px #c33332;",}
 
-    old_password = forms.CharField(label='Enter Current Password :', widget=forms.PasswordInput(attrs=input_field_attrs))
+    old_password = forms.CharField(label='Current Password :', widget=forms.PasswordInput(attrs=input_field_attrs))
     new_password = forms.CharField(label='New Password :', widget=forms.PasswordInput(attrs=input_field_attrs))
     confirm_password = forms.CharField(label='Confirm New Password :', widget=forms.PasswordInput(attrs=input_field_attrs))
 

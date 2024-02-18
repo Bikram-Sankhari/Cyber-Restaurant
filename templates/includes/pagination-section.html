@@ -1,0 +1,15 @@
+<div class="pagination float-end">
+    <span class="step-links">
+      {% if orders.has_previous %}
+        <a href="?page=1" style="text-decoration: none;" class="mx-1"><span class="order-status px-1" style= "border:solid 1px #c33332;border-radius: 5px;color:#c33332">&laquo; first</span></a>
+        <a href="?page={{ orders.previous_page_number }}" class="mx-1" style="text-decoration: none;"><span class="order-status px-1" style= "border:solid 1px #c33332;border-radius: 5px;color:#c33332">previous</span></a>
+      {% endif %}
+
+      <span class="current mx-3">Page {{ orders.number }} of {{ orders.paginator.num_pages }}</span>
+
+      {% if orders.has_next %}
+        <a href="?page={{ orders.next_page_number }}" class="mx-1" style="text-decoration: none;"><span class="order-status px-1" style= "border:solid 1px #c33332;border-radius: 5px;color:#c33332">next</span></a>
+        <a href="?page={{ orders.paginator.num_pages }}" class="mx-1" style="text-decoration: none;"><span class="order-status px-1" style= "border:solid 1px #c33332;border-radius: 5px;color:#c33332">last &raquo;</span></a>
+      {% endif %}
+    </span>
+  </div>

@@ -28,8 +28,14 @@
                 {% endif %}
               </div>
               <div>
-                {% if order.is_fully_delivered %}
+                {% if order.is_fully_delivered_for_customer %}
                 <span class="order-status" style="background-color: #047a06;">Delivered</span>
+
+                {% elif order.is_fully_preparing_for_customer %}
+                <span class="order-status" style="background-color: #c33332;">Preparing</span>
+
+                {% elif order.is_fully_on_the_way_for_customer %}
+                <span class="order-status" style="background-color: #3d77cf;">On The Way</span>
 
                 {% else %}
                 <a href="{% url 'delivery_status' order.order_id %}" style="color:#c33332">Check <i class="bi bi-box-arrow-up-right px-1" style="font-size: 0.8rem;"></i></a>
