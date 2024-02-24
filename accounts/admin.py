@@ -17,6 +17,7 @@ class UserManager(UserAdmin):
 class UserProfileAdmin(admin.GISModelAdmin):
     default_zoom = 4
     point_zoom = 12
+    list_display = ('user', 'address','state', 'country',  'latitude', 'longitude')
 
 
 admin.site.register(User, UserManager)

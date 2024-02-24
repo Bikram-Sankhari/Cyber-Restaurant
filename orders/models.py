@@ -57,12 +57,21 @@ class Order(models.Model):
     def is_fully_on_the_way_for_customer(self):
         return self.check_status_for_customer('On The Way')
 
-    def get_vendor(self):
+    def get_current_vendor(self):
         vendor = Vendor.objects.get(user=request_from_middleware.user)
         return vendor
+    
+    def get_all_vendors(self):
+        all_cart_items = Cart.objects.filter(order=self)
+        vendors = set()
+        for item in all_cart_items:
+            if item.food_item.vendor not in vendors:
+                vendors.add(item.food_item.vendor)
 
+        return vendors        
+    
     def get_cart_items_by_vendor(self):
-        vendor = self.get_vendor()
+        vendor = self.get_current_vendor()
         cart_items = Cart.objects.filter(
             order=self, food_item__vendor=vendor, order_status='Ordered')
 

@@ -7,6 +7,8 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext as _
 from django.utils.deconstruct import deconstructible
 
+REQUEST_FROM_MIDDLEWARE = None
+
 
 class Vendor(models.Model):
     user = models.OneToOneField(
@@ -19,6 +21,7 @@ class Vendor(models.Model):
     is_approved = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+
 
     def open_now(self):
         now = dt.datetime.now()
@@ -39,7 +42,8 @@ class Vendor(models.Model):
         if self.id:
             previous_obj = Vendor.objects.get(id=self.id)
             if self.is_approved != previous_obj.is_approved:
-                send_approval_mail(previous_obj)
+                request = REQUEST_FROM_MIDDLEWARE
+                send_approval_mail(request, previous_obj)
 
         self.vendor_slug = slugify(self.vendor_name)
         return super(Vendor, self).save(*args, **kwargs)

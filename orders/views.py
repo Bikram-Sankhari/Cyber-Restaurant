@@ -15,6 +15,8 @@ from hashlib import sha256
 import json
 from decouple import config
 from marketplace.models import Cart
+from django.contrib.sites.shortcuts import get_current_site
+
 
 PHONEPE_MERCHANT_ID = config('PHONEPE_MERCHANT_ID')
 PHONEPE_SALT_KEY = config('PHONEPE_SALT_KEY')
@@ -51,7 +53,8 @@ def review_order(request):
                 "Content-Type": "application/json",
             }
 
-            redirect_url = f'http://127.0.0.1:8000/orders/check_phonepe_order_status/{order_obj.order_id}'
+            domain = get_current_site(request)
+            redirect_url = f'http://{domain}/orders/check_phonepe_order_status/{order_obj.order_id}'
 
             payload = {
                 "merchantId": PHONEPE_MERCHANT_ID,
@@ -60,7 +63,7 @@ def review_order(request):
                 "merchantUserId": str(order_obj.user.id),
                 "redirectUrl": redirect_url,
                 "redirectMode": "REDIRECT",
-                "callbackUrl": 'http://127.0.0.1:8000',
+                "callbackUrl": f'http://{domain}/',
                 "paymentInstrument": {"type": "PAY_PAGE"},
             }
 
@@ -131,7 +134,12 @@ def check_phonepe_order_status(request, order_id):
         return redirect('home')
 
     else:
-        call_phonepe_order_status_api(request, order)
+        order_status = call_phonepe_order_status_api(request, order)
+
+        if not order_status:
+            messages.error(request, 'Something went wrong!')
+            return redirect('home')
+        
         return redirect('order_status', order_id)
 
 

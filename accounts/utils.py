@@ -29,6 +29,7 @@ def send_verification_email(request, user):
     target_email = user.email
 
     mail = EmailMessage(mail_subject, message, from_email, to=[target_email,])
+    mail.content_subtype = 'html'
     mail.send()
 
 
@@ -44,10 +45,11 @@ def send_password_reset_email(request, user):
     target_email = user.email
     subject = f"Your Password Reset request for Cyber Restaurant"
     mail = EmailMessage(subject, message, from_email, to=[target_email,])
+    mail.content_subtype = 'html'
     mail.send()
 
 
-def send_approval_mail(vendor):
+def send_approval_mail(request, vendor):
     if vendor.is_approved:
         subject = "We are so sorry to say that you are unapproved"
     else:
@@ -55,11 +57,13 @@ def send_approval_mail(vendor):
 
     context = {
         'vendor': vendor,
+        'domain': get_current_site(request),
     }
     message = render_to_string('emails/approval_mail.html', context)
     to_mail = vendor.user.email
     mail = EmailMessage(
         subject, message, settings.DEFAULT_FROM_EMAIL, to=[to_mail,])
+    mail.content_subtype = 'html'
     mail.send()
 
 

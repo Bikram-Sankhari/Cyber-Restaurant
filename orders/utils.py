@@ -5,8 +5,12 @@ from .models import Order
 from decouple import config
 import requests
 from hashlib import sha256
-from decouple import config
+import django.dispatch
+from django.dispatch import receiver
 
+
+payment_done_singal = django.dispatch.Signal()
+items_ordered_singal = django.dispatch.Signal()
 
 def generate_order_id(request):
     now = datetime.now().strftime('%Y%m%d%H%M%S')
@@ -33,13 +37,18 @@ def call_phonepe_order_status_api(request, order):
     }
 
     url = f"https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/status/{PHONEPE_MERCHANT_ID}/{order.order_id}"
-    response = requests.get(url, headers=headers, params=parameters)
+    try:
+        response = requests.get(url, headers=headers, params=parameters)
+    except Exception as e:
+        print(e)
+        return False
 
     order.transaction_details = response.json()
 
 
     if 'data' in response.json():
         if response.json()['data']['state'] == 'COMPLETED':
+            payment_done_singal.send(sender=None, order=order, request=request)
             order.status = 'Completed'
         elif response.json()['data']['state'] == 'FAILED':
             order.status = 'Failed'
@@ -56,11 +65,15 @@ def call_phonepe_order_status_api(request, order):
             item.order_status = 'Ordered'
             item.delivery_status = 'Preparing'
             item.save()
+            
+        items_ordered_singal.send(sender=None, order=order, request=request)
 
     elif order.status == 'Pending':
         for item in food_items_in_order:
             item.order_status = 'Payment Pending'
             item.save()    
+
+    return True
 
 def get_orders(request):
     orders = Order.objects.filter(user=request.user).order_by('-updated_at')

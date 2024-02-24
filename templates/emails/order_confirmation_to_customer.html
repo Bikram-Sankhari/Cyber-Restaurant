@@ -25,7 +25,6 @@
     </style>    
   </head>    
 <body bgcolor="#F5F8FA" style="width: 100%; margin: auto 0; padding:0; font-family:Lato, sans-serif; font-size:16px; color:#33475B; word-break:break-word">
-  
 <div id="email">
   <table role="presentation" width="100%">
     <tr>
@@ -37,13 +36,59 @@
   <table bgcolor="#EAF0F6" width="100%" role="presentation" border="0" cellpadding="0" cellspacing="10px" style="padding: 30px 30px 60px 60px;">
     <tr>
       <td>
-        <h2 style="text-align: center;">Activate Your Account</h2>
-        <p style="text-align: center;">Click the link below to reset your Password.</p>
+        <h2 style="text-align: center;">ORDER CONFIRMED</h2>
+        <p style="text-align: center;">Click the link below to check you order status.</p>
         <div style="text-align: center;">
-          <a href="http://{{domain}}{% url 'validate_forgot_password' uidb64=uid token=token %}" class="activate-btn" style="color: #fff;"> Verify Now</a>
+          <a href="http://{{domain}}{% url 'order_status' order.order_id %}" class="activate-btn" style="color: #fff;"> Check Order Status </a>
         </div>
       </td> 
     </tr>
+  </table>
+
+  <table>
+    <h2>Here are your order Details:</h2>
+    <tr>
+        <td>Order ID:</td>
+        <td>{{order.order_id}}</td>
+    </tr>
+
+    <tr>
+        <td>Ordered From:</td>
+        <td>
+            <ol>
+            {% for vendor in order.get_all_vendors %}
+                <li>{{vendor}}</li>
+            {% endfor %}
+            </ol>
+        </td>
+    </tr>
+  </table>
+  <table>
+    <tr>
+        <td>
+            Items Ordered:
+        </td>
+    </tr>
+
+    <tr>
+        <td style="padding-right: 3vw;"></td>
+        <td style="padding-right: 3vw;">Name</td>
+        <td style="padding-right: 3vw;">Quantity</td>
+        <td style="padding-right: 3vw;">From</td>
+        <td>Amount</td>
+    </tr>
+    {% for item in items %}
+    <tr>
+        <td><img src="nothing" alt="an image of {{item.food_item.food_title}}" width="3vw"></td>
+        <td>{{item.food_item.food_title}}</td>
+        <td style="text-align: center">{{item.quantity}}</td>
+        <td>{{item.food_item.vendor}}</td>
+        <td style="text-align: center;">{{item.total_price}}</td>
+    </tr>
+    <br>
+    {% endfor %}
+
+
   </table>
 
   <table role="presentation" bgcolor="#C33332" width="100%">
