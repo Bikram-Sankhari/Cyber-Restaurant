@@ -143,15 +143,13 @@ def login(request):
 
 @login_required(login_url='login')
 def logout(request):
-    try:
-        del(request.session['latitude'])
-        del(request.session['longitude'])
-        del(request.session['current_url'])
-    except KeyError:
-        pass
-    auth.logout(request)
-    messages.info(request, "You have been successfully logged out")
-    return redirect('login')
+    if request.method == 'POST':
+        auth.logout(request)
+        messages.info(request, "You have been successfully logged out")
+        return redirect('login')
+    else:
+        messages.error(request, 'Invalid Request')
+        return redirect('my_account')
 
 
 @login_required(login_url='login')

@@ -9,13 +9,34 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
-
 import os
 from pathlib import Path
 from decouple import config
+import platform
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+LOGOUT_REDIRECT_URL = "/accounts/login"
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "file": {
+            "level": "DEBUG",
+            "class": "logging.FileHandler",
+            "filename": "/home/puchi/Restaurant/debug.log",
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["file"],
+            "level": "DEBUG",
+            "propagate": True,
+        },
+    },
+}
 
 
 # Quick-start development settings - unsuitable for production
@@ -25,9 +46,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=False, cast=bool)
+if platform.system() == 'Linux':
+    DEBUG = False
+else:
+    DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
 
 # Application definition
@@ -139,9 +163,10 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'development_static',
 ]
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 # Media Files Configuration
-MEDIA_ROOT = BASE_DIR / 'User Upload'
+MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = 'media/'
 
 # Default primary key field type
@@ -171,9 +196,12 @@ REVENUE_CHARGE_PERCENTAGE= 10
 
 
 # GIS Configuration
-parent_path = os.getcwd()
-parent_dir = os.path.abspath(os.path.join(parent_path, os.pardir))
-os.environ['PATH'] = os.path.join(parent_dir, '.venv\Libsite-packages\osgeo') + ';' + os.environ['PATH']
-os.environ['PROJ_LIB'] = os.path.join(parent_dir, '.venv\Lib\site-packages\osgeo\data\proj') + ';' + os.environ['PATH']
-GDAL_LIBRARY_PATH = os.path.join(parent_dir, '.venv\Lib\site-packages\osgeo\gdal304.dll')
-GEOS_LIBRARY_PATH = os.path.join(parent_dir, '.venv\Lib\site-packages\osgeo\geos_c.dll')
+if platform.system() == 'Linux':
+    pass
+else:
+    parent_path = os.getcwd()
+    parent_dir = os.path.abspath(os.path.join(parent_path, os.pardir))
+    os.environ['PATH'] = os.path.join(parent_dir, '.wvenv\Libsite-packages\osgeo') + ';' + os.environ['PATH']
+    os.environ['PROJ_LIB'] = os.path.join(parent_dir, '.wvenv\Lib\site-packages\osgeo\data\proj') + ';' + os.environ['PATH']
+    GDAL_LIBRARY_PATH = os.path.join(parent_dir, '.wvenv\Lib\site-packages\osgeo\gdal304.dll')
+    GEOS_LIBRARY_PATH = os.path.join(parent_dir, '.wvenv\Lib\site-packages\osgeo\geos_c.dll')

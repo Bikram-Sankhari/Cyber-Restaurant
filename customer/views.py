@@ -123,5 +123,4 @@ def change_customer_password(request):
     context = {
         'form': form,
     }
-    print(form.errors)
     return render(request, 'customer/change_customer_password.html', context)
