@@ -121,10 +121,7 @@ def login(request):
         return logged_in_redirect(request, "You are already logged In !")
 
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-
-        user = auth.authenticate(username=username, password=password)
+        user = auth.authenticate(username=request.POST['username'], password=request.POST['password'])
         if user:
             auth.login(request, user)
             messages.success(request, 'You are now Logged In !!!')
