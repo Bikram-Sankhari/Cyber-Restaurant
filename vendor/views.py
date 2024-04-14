@@ -21,6 +21,8 @@ from django.db.models import Q
 from django.conf import settings
 from datetime import datetime
 from customer.forms import ChangePasswordForm
+from accounts.models import DEFAULT_PIC
+import os
 
 ORDERS_PER_PAGE = 5
 
@@ -67,20 +69,37 @@ def vendor_profile(request):
     vendor = get_object_or_404(Vendor, user=request.user)
     profile = get_object_or_404(UserProfile, user=request.user)
 
+    cover_photo_path = profile.cover_photo.path
+    profile_picture_path = profile.profile_picture.path
+    license_path = vendor.vendor_license.path
+
     if request.method == 'POST':
         vendor_form = VendorForm(request.POST, request.FILES, instance=vendor)
         user_profile_form = UserProfileForm(
             request.POST, request.FILES, instance=profile)
 
         if vendor_form.is_valid() and user_profile_form.is_valid():
+            media_dir = os.path.join(os.getcwd(), 'media')
+            default_pic_path = os.path.join(media_dir, DEFAULT_PIC)
+
+            # Delete Previous License
+            if license_path != os.path.join(media_dir, str(vendor_form.cleaned_data['vendor_license'])):
+                os.remove(license_path)
+
             vendor_form.save()
+
+            # Delete Previous Cover Picture
+            if cover_photo_path != default_pic_path and os.path.join(media_dir, str(user_profile_form.cleaned_data['cover_photo'])) != cover_photo_path:
+                os.remove(cover_photo_path)
+
+            # Delete Previous Profile Picture
+            if profile_picture_path != default_pic_path and os.path.join(media_dir, str(user_profile_form.cleaned_data['profile_picture'])) != profile_picture_path:
+                os.remove(profile_picture_path)
+
             user_profile_form.save()
             messages.success(request, 'Profile updated successfully')
             return redirect('vendor_profile')
         else:
-            print(vendor_form.errors)
-            print(user_profile_form.errors)
-
             context = {
                 'vendor_form': vendor_form,
                 'user_profile_form': user_profile_form,
@@ -224,8 +243,10 @@ def add_food(request):
 
     else:
         form = FoodItemForm()
-        form.fields['category'].queryset = Category.objects.filter(
-            vendor=get_vendor(request))
+        categories_of_vendor = Category.objects.filter(vendor=get_vendor(request))
+        form.fields['category'].queryset = categories_of_vendor
+        if 'category' in request.GET:
+                form.initial['category'] = request.GET['category']
     context = {
         'form': form,
     }
