@@ -6,6 +6,8 @@ from django.contrib.gis.measure import D
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib import messages
 
+TOP_RESTAURANTS_COUNT = 9
+DEFAULT_SEARCH_RADIUS = 50
 
 def home(request):
     if get_location(request):
@@ -17,14 +19,13 @@ def home(request):
             is_approved=True,
             user__is_active=True,
             user_profile__location__distance_lte=(
-                current_point, D(km=50))
+                current_point, D(km=DEFAULT_SEARCH_RADIUS))
         ).annotate(distance=Distance("user_profile__location", current_point)
-                   ).order_by("distance")
+                   ).order_by("distance")[:TOP_RESTAURANTS_COUNT]
         for vendor in vendors:
             vendor.distance = round(vendor.distance.km, 2)
     else:
-        vendors = Vendor.objects.filter(
-            is_approved=True, user__is_active=True)[:8]
+        vendors = None
     context = {
         'vendors': vendors,
     }

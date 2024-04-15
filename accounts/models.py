@@ -90,14 +90,15 @@ class User(AbstractBaseUser):
         else:
             return 'admin'
         
+DEFAULT_PIC = 'default/unknown.jpg'
 
 class UserProfile(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE, blank=True, null=True)
     profile_picture = models.ImageField(
-        upload_to='users/profile_pictures', default='unknown.jpg')
+        upload_to='users/profile_pictures', default=DEFAULT_PIC)
     cover_photo = models.ImageField(
-        upload_to='users/cover_pictures', default='unknown.jpg')
+        upload_to='users/cover_pictures', default=DEFAULT_PIC)
     phone_number = models.CharField(max_length=12, blank=True)
     address = models.CharField(max_length=500, blank=True, null=True)
     country = models.CharField(max_length=15, blank=True, null=True)

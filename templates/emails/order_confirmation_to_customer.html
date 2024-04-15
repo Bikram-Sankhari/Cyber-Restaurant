@@ -79,7 +79,7 @@
     </tr>
     {% for item in items %}
     <tr>
-        <td><img src="nothing" alt="an image of {{item.food_item.food_title}}" width="3vw"></td>
+        <td><img src="http://{{domain}}{{item.food_item.image.url}}" alt="an image of {{item.food_item.food_title}}" width="3vw"></td>
         <td>{{item.food_item.food_title}}</td>
         <td style="text-align: center">{{item.quantity}}</td>
         <td>{{item.food_item.vendor}}</td>

@@ -19,26 +19,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 LOGOUT_REDIRECT_URL = "/accounts/login"
 
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "handlers": {
-        "file": {
-            "level": "DEBUG",
-            "class": "logging.FileHandler",
-            "filename": "/home/puchi/Restaurant/debug.log",
-        },
-    },
-    "loggers": {
-        "django": {
-            "handlers": ["file"],
-            "level": "DEBUG",
-            "propagate": True,
-        },
-    },
-}
-
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
@@ -52,6 +32,25 @@ else:
     DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1']
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "file": {
+            "level": "WARNING",
+            "class": "logging.FileHandler",
+            "filename": "/home/puchi/Cyber_Restaurant/debug.log",
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["file"],
+            "level": "WARNING",
+            "propagate": True,
+        },
+    },
+}
 
 
 # Application definition
@@ -195,13 +194,11 @@ GOOGLE_API_KEY = config('GOOGLE_API_KEY')
 REVENUE_CHARGE_PERCENTAGE= 10
 
 
-# GIS Configuration
-if platform.system() == 'Linux':
-    pass
-else:
+# GDAL Configuration
+if platform.system() != 'Linux':
     parent_path = os.getcwd()
     parent_dir = os.path.abspath(os.path.join(parent_path, os.pardir))
-    os.environ['PATH'] = os.path.join(parent_dir, '.wvenv\Libsite-packages\osgeo') + ';' + os.environ['PATH']
+    os.environ['PATH'] = os.path.join(parent_dir, '.wvenv\Lib\site-packages\osgeo') + ';' + os.environ['PATH']
     os.environ['PROJ_LIB'] = os.path.join(parent_dir, '.wvenv\Lib\site-packages\osgeo\data\proj') + ';' + os.environ['PATH']
     GDAL_LIBRARY_PATH = os.path.join(parent_dir, '.wvenv\Lib\site-packages\osgeo\gdal304.dll')
     GEOS_LIBRARY_PATH = os.path.join(parent_dir, '.wvenv\Lib\site-packages\osgeo\geos_c.dll')

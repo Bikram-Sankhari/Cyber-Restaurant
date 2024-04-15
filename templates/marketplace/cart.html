@@ -24,13 +24,15 @@
                       <div id="menu-item-list-6272" class="menu-itam-list">
                         <ul id="cart-holder">
                           {% for item in cart_items %}
-                            <li id="food-item-{{ item.food_item.pk }}">
+                            <li id="food-item-{{ item.food_item.pk }}" class="lh-1">
                               <div class="image-holder">
                                 <a href="{{ item.food_item.image.url }}"><img src="{{ item.food_item.image.url }}" alt="" /></a>
                               </div>
-                              <div class="text-holder">
-                                <h6>{{ item.food_item.food_title }}</h6>
-                                <span>{{ item.food_item.description }}</span>
+                              <div class="text-holder" style="width: 30vw;">
+                                <a href="#" class="text-decoration-none">
+                                  <p class="mb-0 fw-bold fs-6" id="category_name">{{ item.food_item.food_title }}</p>
+                                </a>
+                                <small class="text-muted lh-1 text-wrap" style="width:6rem;">{{ item.food_item.description }}</small>
                               </div>
                               <div class="price-holder">
                                 <span class="price">₹{{ item.food_item.price }}</span>

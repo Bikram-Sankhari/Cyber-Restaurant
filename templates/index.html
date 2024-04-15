@@ -69,18 +69,16 @@
               <p>Explore restaurants, bars, and cafés by locality</p>
             </div>
           </div>
-          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 px-0">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 px-0 mt-3">
             <div class="company-logo">
               <ul>
                 {% if vendors %}
                   {% for vendor in vendors %}
-                    {% if vendor.open_now %}
                       <li class="has-border">
                         <figure>
                           <a href="{% url 'vendor_detail' vendor.vendor_slug %}"><img src="{{ vendor.user_profile.profile_picture.url }}" class="attachment-full size-full wp-post-image" alt="A Profile Picture" /></a>
                         </figure>
                       </li>
-                    {% endif %}
                   {% endfor %}
                 {% else %}
                   <div class="text-center">
@@ -109,20 +107,13 @@
               <ul class="row">
                 {% if vendors %}
                   {% for vendor in vendors %}
-                    {% if vendor.open_now %}
                       <li class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                         <div class="list-post featured">
                           <div class="img-holder">
                             <figure>
                               <a href="#"><img src="{{ vendor.user_profile.profile_picture.url }}" class="img-thumb wp-post-image" alt="" /></a>
                             </figure>
-                            <span class="restaurant-status {% if vendor.open_now %}{% endif %}">
-                              <em class="bookmarkRibbon"></em>{% if vendor.open_now %}
-                                open
-                              {% else %}
-                                close
-                              {% endif %}
-                            </span>
+                            <span class="restaurant-status {% if vendor.open_now %} open {% else %} close{% endif %}"><em class="bookmarkRibbon"></em>{% if vendor.open_now %} Open {% else %} Closed{% endif %}</span>
                           </div>
                           <div class="text-holder">
                             <div class="post-title">
@@ -142,7 +133,6 @@
                           </div>
                         </div>
                       </li>
-                    {% endif %}
                   {% endfor %}
                 {% else %}
                   <div class="text-center">

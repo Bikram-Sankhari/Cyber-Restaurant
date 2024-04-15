@@ -23,7 +23,7 @@
                 </a>
                 <h6>Category: <span style="color:#c33332" class="fs-6">{{category | upper}}</span> </h6>
                 {% if fooditems %}
-                <a href="{% url 'add_food' %}" class="btn btn-success btn-sm float-end  m-1 px-4" style="--bs-btn-font-size: .8rem;--bs-btn-bg:#c33332;--bs-btn-border-color:#c33332;--bs-btn-color:white">
+                <a href="{% url 'add_food' %}?category={{ category.id }}" class="btn btn-success btn-sm float-end  m-1 px-4" style="--bs-btn-font-size: .8rem;--bs-btn-bg:#c33332;--bs-btn-border-color:#c33332;--bs-btn-color:white">
                   <i class="bi bi-plus-lg"></i>
                   Add Food
                 </a>
@@ -36,7 +36,7 @@
                       <img src="{{item.image.url}}" width="60vw">
                     </td>
                     <td class="py-3 text-start" style="width: 30vw;">
-                        <a href="#" class="text-decoration-none"><p class="mb-0 fw-bold" id="category_name">{{item}}</p></a>
+                        <a href="#" class="text-decoration-none"><p class="mb-1 fw-bold lh-1" id="category_name">{{item}}</p></a>
                         <small class="text-muted lh-1">{{item.description}}</small>
                     </td>
                     <td class="py-3 text-start" style="width: 20vw;">
@@ -58,7 +58,7 @@
                 {% else %}
                 <h6 class="text-center">No FoodItem in this Category</h6>
                 <div class="text-center">
-                <a href="{% url 'add_food' %}" class="btn btn-success btn-sm  m-1 px-4" style="--bs-btn-font-size: .8rem;--bs-btn-bg:#c33332;--bs-btn-border-color:#c33332;--bs-btn-color:white">
+                <a href="{% url 'add_food' %}?category={{ category.id }}" class="btn btn-success btn-sm  m-1 px-4" style="--bs-btn-font-size: .8rem;--bs-btn-bg:#c33332;--bs-btn-border-color:#c33332;--bs-btn-color:white">
                     <i class="bi bi-plus-lg"></i>
                     How about adding one?
                 </a>

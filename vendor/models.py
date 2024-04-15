@@ -92,6 +92,10 @@ class OpeningHours(models.Model):
     close = models.FloatField(choices=get_time_choices, blank=True, null=True)
     is_closed = models.BooleanField(default=False)
 
+    class Meta:
+        verbose_name = 'Opening Hour'
+        verbose_name_plural = 'Opening Hours'
+
     def get_day(self):
         return self.get_day_display()
 

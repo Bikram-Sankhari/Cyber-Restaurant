@@ -45,7 +45,10 @@
 
       {% comment %} Signout {% endcomment %}
       <li>
-        <a class="logout-btn" href="{% url 'logout' %}"><i class="icon-log-out"></i>Signout</a>
+        <form action="{% url 'logout' %}" method="POST">
+          {% csrf_token %}
+        <a class="logout-btn" style="cursor: pointer;" onclick="this.parentNode.submit()"><i class="icon-log-out"></i>Signout</a>
+        </form>
       </li>
     </ul>
   </div>

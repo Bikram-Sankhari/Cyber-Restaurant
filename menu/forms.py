@@ -26,6 +26,9 @@ class FoodItemForm(forms.ModelForm):
         }
 
         common_attrs = {'class': 'form-control',}
+
+        category_attrs = common_attrs.copy()
+        common_attrs['autofocus'] = 'True'
         
         price_attrs = common_attrs.copy()
         price_attrs['style'] = 'width:20vw'
@@ -34,7 +37,7 @@ class FoodItemForm(forms.ModelForm):
         image_attrs['style'] = 'font-size:0.8rem;width:20vw'
 
         widgets = {
-            'category': forms.Select(attrs=common_attrs,),
+            'category': forms.Select(attrs=category_attrs,),
             'food_title': forms.TextInput(attrs=common_attrs),
             'price': forms.NumberInput(attrs=price_attrs),
             'description': forms.Textarea(attrs=common_attrs),

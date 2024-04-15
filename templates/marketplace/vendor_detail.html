@@ -116,13 +116,15 @@
                             {% if category.food_items.all %}
                               <ul>
                                 {% for food in category.food_items.all %}
-                                  <li>
+                                  <li class="lh-1">
                                     <div class="image-holder">
                                       <a href="{{ food.image.url }}"><img src="{{ food.image.url }}" alt="" /></a>
                                     </div>
-                                    <div class="text-holder">
-                                      <h6>{{ food.food_title }}</h6>
-                                      <span>{{ food.description }}</span>
+                                    <div class="text-holder" style="width: 40vw;">
+                                      <a href="#" class="text-decoration-none">
+                                        <p class="mb-0 fw-bold fs-6" id="category_name">{{ food.food_title }}</p>
+                                      </a>
+                                      <small class="text-muted lh-1 text-wrap" style="width:6rem;">{{ food.description }}</small>
                                     </div>
                                     <div class="price-holder">
                                       <span class="price">₹{{ food.price }}</span>
@@ -167,13 +169,15 @@
                             {% if category.food_items.all %}
                               <ul>
                                 {% for food in category.food_items.all %}
-                                  <li>
+                                  <li class="lh-1">
                                     <div class="image-holder">
                                       <a href="{{ food.image.url }}"><img src="{{ food.image.url }}" alt="" /></a>
                                     </div>
-                                    <div class="text-holder">
-                                      <h6>{{ food.food_title }}</h6>
-                                      <span>{{ food.description }}</span>
+                                    <div class="text-holder" style="width: 40vw;">
+                                      <a href="#" class="text-decoration-none">
+                                        <p class="mb-0 fw-bold fs-6" id="category_name">{{ food.food_title }}</p>
+                                      </a>
+                                      <small class="text-muted lh-1 text-wrap" style="width:6rem;">{{ food.description }}</small>
                                     </div>
                                     <div class="price-holder">
                                       <span class="price">₹{{ food.price }}</span>

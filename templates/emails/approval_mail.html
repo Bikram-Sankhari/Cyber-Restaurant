@@ -55,7 +55,7 @@
             {% if vendor.is_approved %}
             <a href="http://{{ domain }}" class="activate-btn" style="color: #fff;">Go to Site</a>
             {% else %}
-            <a href="http://{{ domain }}/{% url 'login' %}" class="activate-btn" style="color: #fff;">Login</a>
+            <a href="http://{{ domain }}{% url 'login' %}" class="activate-btn" style="color: #fff;">Login</a>
             {% endif %}
         </div>
       </td> 
