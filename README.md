@@ -1,4 +1,4 @@
-![](https://github.com/Bikram-Sankhari/Cyber_Restaurant/blob/master/development_static/assets/extra-images/Readme_logo.png?raw=true)
+![](https://github.com/Bikram-Sankhari/Cyber_Restaurant/blob/main/development_static/assets/extra-images/Readme_logo.png?raw=true)
 # A Multiple Restaurant Marketplace Web Application
 
 ![](https://img.shields.io/badge/Python-3.11.6-green) ![](https://img.shields.io/badge/Django-5.0-blue) ![](https://img.shields.io/badge/GDAL-purple) ![](https://img.shields.io/badge/PostgreSQL-16.2-blue) ![](https://img.shields.io/badge/NGINX-1.24.0-red
