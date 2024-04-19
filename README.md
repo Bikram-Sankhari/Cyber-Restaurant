@@ -46,7 +46,7 @@ With the Deployed version of this Web App:
   * [Linux Setup](#linux-setup)
     + [Go to your User Directory](#1-go-to-your-user-directory)
     + [Clone the repository](#2-clone-the-repository)
-    + [Change working Directory to the newly cloned "Cyber_Restaurant" Directory in terminal](#3-change-working-directory-to-the-newly-cloned--cyber-restaurant--directory-in-terminal)
+    + [Change working Directory to the newly cloned "Cyber_Restaurant" Directory in terminal](#3-change-working-directory-to-the-newly-cloned-cyber_restaurant-directory-in-terminal)
     + [Create a Virtual Environment](#4-create-a-virtual-environment)
     + [Activate the Virtual Environment](#5-activate-the-virtual-environment)
     + [Install the required packages](#6-install-the-required-packages)
@@ -63,19 +63,20 @@ With the Deployed version of this Web App:
 - [Open Issues](#open-issues)
   * [User is not prompted to give location access automatically after reaching the site.](#1-user-is-not-prompted-to-give-location-access-automatically-after-reaching-the-site)
   * [Users can continue to place an order to a Restaurant even when it is Closed](#2-users-can-continue-to-place-an-order-to-a-restaurant-even-when-it-is-closed)
-- [Want to Contribute?](#want-to-contribute-)
+- [Want to Contribute?](#want-to-contribute)
   * [Create a Fork of this Repository](#1-create-a-fork-of-this-repository)
   * [Clone Your Fork](#2-clone-your-fork)
   * [Create a New Branch with a name that best describes the contribution you are about to make](#3-create-a-new-branch-with-a-name-that-best-describes-the-contribution-you-are-about-to-make)
   * [Now you can work on your new Branch](#4-now-you-can-work-on-your-new-branch)
   * [Commit the changes in your new Branch and push the code to your Forked Repository](#5-commit-the-changes-in-your-new-branch-and-push-the-code-to-your-forked-repository)
   * [Give a Pull request to this Upstream Repo](#6-give-a-pull-request-to-this-upstream-repo)
-- [Found a BUG 🐞 ??](#found-a-bug------)
-- [Acknowledgements](#Acknowledgements)
+- [Found a BUG 🐞 ??](#found-a-bug--)
+- [Acknowledgements](#acknowledgements)
 
 ## Server Setup Guide
 As this is a pretty complex project and uses various different technologies, it is a quite long process to run the project locally or on a server. But the good news is, I have covered it all here and after following  these steps you can deploy it or run it locally.
-###Prerequisites
+
+### Prerequisites
 - Linux or Windows OS
 - Python version 3.11.6 (Because as on 31/03/24 there is no GDAL release for higher python version)
 - Git Installed
@@ -514,4 +515,5 @@ Let me know directly by Email: bikramsankhari2024@gmail.com
 I would like to Thank [Django Official Forum](https://forum.djangoproject.com/) for helping me out on RUNTIME MODEL VALIDATION issue.
 
 ------------
+
 
