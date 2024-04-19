@@ -30,6 +30,7 @@ With the Deployed version of this Web App:
 - [Usage](#usage)
 - [Key Features](#key-features)
 - [Server Setup Guide](#server-setup-guide)
+  * [Prerequisites](#prerequisites)
   * [Windows Setup](#windows-setup)
     + [Make a clone of this repo at your preferred location](#1-make-a-clone-of-this-repo-at-your-preferred-location)
     + [Create a Virtual Environment](#3-create-a-virtual-environment)
