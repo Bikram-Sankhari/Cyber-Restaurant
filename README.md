@@ -117,12 +117,11 @@ As this is a pretty complex project and uses various different technologies, it 
 - Open 'settings.py' in 'Restaurant' sub-directory
 - Under the comment "GDAL Configuration"  replace the IF block with the following code
 
-
-	pwd = os.getcwd()
-	os.environ['PATH'] = os.path.join(pwd, 'env\Lib\site-packages\osgeo') + ';' + os.environ['PATH']
-    os.environ['PROJ_LIB'] = os.path.join(pwd, 'env\Lib\site-packages\osgeo\data\proj') + ';' + os.environ['PATH']
-    GDAL_LIBRARY_PATH = os.path.join(pwd, 'env\Lib\site-packages\osgeo\gdal304.dll')
-    GEOS_LIBRARY_PATH = os.path.join(pwd, 'env\Lib\site-packages\osgeo\geos_c.dll')
+		pwd = os.getcwd()
+		os.environ['PATH'] = os.path.join(pwd, 'env\Lib\site-packages\osgeo') + ';' + os.environ['PATH']
+		os.environ['PROJ_LIB'] = os.path.join(pwd, 'env\Lib\site-packages\osgeo\data\proj') + ';' + os.environ['PATH']
+		GDAL_LIBRARY_PATH = os.path.join(pwd, 'env\Lib\site-packages\osgeo\gdal304.dll')
+		GEOS_LIBRARY_PATH = os.path.join(pwd, 'env\Lib\site-packages\osgeo\geos_c.dll')
 
 
 #### 9. Download and Install PostgreSQL from <a href="https://www.enterprisedb.com/downloads/postgres-postgresql-downloads">here</a>
