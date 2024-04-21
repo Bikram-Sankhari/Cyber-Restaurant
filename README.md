@@ -22,7 +22,7 @@ With the Deployed version of this Web App:
 - Responsive UI to suit every device
 - Clean, Maintainable & Scalable codebase
 
-**However it is not possible to list down all the tiny but complex functionalities this app can perform. So to have a glance of the working app, have a look**  [**here**](https://youtu.be/w94kJWzct4o "Have a Glance Here")
+**However it is not possible to list down all the tiny but complex functionalities this app can perform. So to have a glance of the working app, watch**  [**this video**](https://youtu.be/w94kJWzct4o)
 
 ------------
 
